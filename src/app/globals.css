@@ -138,3 +138,35 @@
     @apply font-sans;
   }
 }
+
+@keyframes slowZoom {
+  0% {
+    transform: scale(1.05) translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: scale(1.1) translate3d(-0.5%, -0.5%, 0);
+  }
+
+  100% {
+    transform: scale(1.05) translate3d(0.5%, 0.5%, 0);
+  }
+}
+
+@keyframes floatGlow {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate3d(-40px, 30px, 0) scale(1.15);
+  }
+}
+
+.animate-slow-zoom {
+  animation: slowZoom 12s ease-in-out infinite alternate;
+}
+
+.animate-float-glow {
+  animation: floatGlow 8s ease-in-out infinite alternate;
+}
