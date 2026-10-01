@@ -2,22 +2,15 @@ import { GraduationCap } from "lucide-react";
 import React from "react";
 import { LoginForm } from "../../../../../components/form/login-from";
 import Link from "next/link";
+import Logo from '../../../../../assets/Logo';
 
 const loginPage = () => {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Left Side */}
       <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex justify-center gap-2 md:justify-start">
-          <Link href="#" className="flex items-center gap-1 font-medium">
-            <div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <GraduationCap className="size-4" />
-            </div>
-
-            <p>
-              <span className="text-primary">U</span>nSphere
-            </p>
-          </Link>
+        <div className="flex  justify-center gap-2 md:justify-start">
+         <Logo flexColRow='flex-row'/>
         </div>
 
         <div className="flex flex-1 items-center justify-center">

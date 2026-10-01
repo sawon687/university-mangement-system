@@ -19,6 +19,8 @@ import { registerSchema } from '../../validation';
 import { useRegister } from '../../hook/auth.hook';
 import { isValid } from 'zod/v3';
 import { Spinner } from '../ui/spinner';
+import { useRouter } from 'next/navigation';
+
 
 const inputClass =
   "border-2 focus:border-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary";
@@ -26,6 +28,7 @@ const inputClass =
 export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
 const {mutate:register,isPending,isError}=useRegister()
+const router=useRouter()
   const form = useForm({
     defaultValues: {
       name: "sawon",
@@ -51,13 +54,17 @@ const {mutate:register,isPending,isError}=useRegister()
 
       register(registerData, {
         onSuccess: (res) => {
-          console.log("response result", res);
+      
             
           toast.add({
             title: "Register success",
             description: res.message,
             type: "success",
           });
+
+          const params=new URLSearchParams({email:value.email})
+
+          router.push(`/auth/verify-account?${params}`)
         },
 
         onError: (error: any) => {
@@ -264,7 +271,7 @@ const {mutate:register,isPending,isError}=useRegister()
           <div className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link
-              href="/login"
+              href="/auth/login"
               className="font-medium underline underline-offset-4 hover:text-primary"
             >
               Login

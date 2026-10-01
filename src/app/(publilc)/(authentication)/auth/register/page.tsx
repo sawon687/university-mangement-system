@@ -3,6 +3,7 @@ import { GraduationCap } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import { RegisterForm } from "../../../../../components/form/register-form";
+import Logo from '../../../../../assets/Logo';
 
 const registerPage = () => {
   return (
@@ -10,18 +11,7 @@ const registerPage = () => {
       {/* Left Side */}
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
-          <Link
-            href="#"
-            className="flex items-center gap-1 font-medium"
-          >
-            <div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <GraduationCap className="size-4" />
-            </div>
-
-            <p>
-              <span className="text-primary">U</span>nSphere
-            </p>
-          </Link>
+        <Logo flexColRow='flex-row'/>
         </div>
 
         <div className="flex flex-1 items-center justify-center">

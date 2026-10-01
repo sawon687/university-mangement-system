@@ -115,7 +115,19 @@ export function LoginForm() {
                 isError && errorMessage?.toLowerCase().includes("password");
               return (
                 <Field data-invalid={isInvalid || showBackendError}>
+                 
+
+                <div className="flex items-center">
                   <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                  <Link
+                    href='/auth/forgot-password'
+                    className="ml-auto inline-block text-sm text-primary underline-offset-4 hover:underline"
+                  >
+                    Forgot your password?
+                  </Link>
+                </div>
+
+              
                   <div className="relative">
                     <Input
                       name={field.name}

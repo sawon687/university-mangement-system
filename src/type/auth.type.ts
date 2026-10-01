@@ -11,3 +11,10 @@ export interface IRegister{
     name:string,
     
 }
+
+export interface IUpdatePassword{
+    email:string,
+    token:string,
+    password:string,
+    confirmPassword:string
+}

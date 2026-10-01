@@ -1,13 +1,15 @@
 import React, { ReactNode } from "react";
 import Navbar from '../../../components/layout/public/Navbar';
+import Footer from '../../../components/layout/public/Footer';
 
 
 const layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="min-h-screen">
-      layout
+    <div>
+  
       <Navbar />
-      <main>{children}</main>
+      <main className="min-h-screen">{children}</main>
+      <Footer/>
     </div>
   );
 };
