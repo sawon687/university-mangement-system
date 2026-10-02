@@ -22,9 +22,9 @@ const Footer = () => {
         <div className="grid gap-10 py-12 md:grid-cols-4 md:py-16">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link href="/" className="inline-flex">
+       
               <Logo flexColRow="flex-row" />
-            </Link>
+            
 
             <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
               Build better experiences with simple, powerful and modern

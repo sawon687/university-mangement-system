@@ -29,3 +29,17 @@ export function userUpdatePassword(payload:IUpdatePassword){
     body:payload
   })
 }
+
+export function getMe(){
+  return apiFetch('/auth/getme',{
+    method:"GET",
+  })
+}
+
+export function userLoggedOut() {
+  return apiFetch("/auth/logout", {
+    method: "POST",
+   
+  });
+}
+

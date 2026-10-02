@@ -4,7 +4,7 @@ import { LoginForm } from "../../../../../components/form/login-from";
 import Link from "next/link";
 import Logo from '../../../../../assets/Logo';
 
-const loginPage = () => {
+const loginpage = () => {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Left Side */}
@@ -90,4 +90,4 @@ const loginPage = () => {
   );
 };
 
-export default loginPage;
+export default loginpage;

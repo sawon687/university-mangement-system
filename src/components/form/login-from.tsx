@@ -17,12 +17,16 @@ import { useLogin } from "../../hook/auth.hook";
 import { toast } from "../ui/toast";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { Spinner } from '../ui/spinner';
+import { useRouter } from 'next/navigation';
 const inputClass =
   "border-2 focus:border-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary";
 export function LoginForm() {
   const { mutate: login, isPending, isError } = useLogin();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [showPassword, setShowPassword] = useState(false);
+  const router=useRouter()
+  console.log(errorMessage, "error sawon");
   console.log("is error", isError);
   const form = useForm({
     defaultValues: {
@@ -46,11 +50,12 @@ export function LoginForm() {
             description: "welcome Back",
             type: "success",
           });
+          router.push('/')
         },
 
         onError: (error: any) => {
           console.log("erros", error.data);
-          setErrorMessage(error.data?.message || "login felad");
+          setErrorMessage(error.data.message || "login felad");
         },
       });
     },
@@ -113,27 +118,28 @@ export function LoginForm() {
                 field.state.meta.isTouched && !field.state.meta.isValid;
               const showBackendError =
                 isError && errorMessage?.toLowerCase().includes("password");
+              console.log("show error", showBackendError);
               return (
                 <Field data-invalid={isInvalid || showBackendError}>
-                 
+                  <div className="flex items-center">
+                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                    <Link
+                      href="/auth/forgot-password"
+                      className="ml-auto inline-block text-sm text-primary underline-offset-4 hover:underline"
+                    >
+                      Forgot your password?
+                    </Link>
+                  </div>
 
-                <div className="flex items-center">
-                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                  <Link
-                    href='/auth/forgot-password'
-                    className="ml-auto inline-block text-sm text-primary underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-
-              
                   <div className="relative">
                     <Input
                       name={field.name}
                       id={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                         onChange={(e) => {
+                      field.handleChange(e.target.value);
+                      if (errorMessage) setErrorMessage("");
+                    }}
                       placeholder="Enter your Password"
                       className={inputClass}
                       onBlur={field.handleBlur}
@@ -154,18 +160,16 @@ export function LoginForm() {
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
-                    {isInvalid && (
-                      <FieldError
-                        errors={field.state.meta.errors || errorMessage}
-                      />
+                    {showBackendError && (
+                      <FieldError errors={[{ message: errorMessage }]} />
                     )}
                   </div>
                 </Field>
               );
             }}
           </form.Field>
-          <Button type="submit" onClick={() => console.log("BUTTON CLICK")}>
-            Login
+          <Button type="submit" disabled={isPending} >
+          {isPending?<Spinner/>:'Login'}
           </Button>
 
           <FieldSeparator>Or continue with</FieldSeparator>
