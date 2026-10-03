@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
+import DashboardShell from '../../../components/dashboard/dashbaord-shell'
 
-const layout = () => {
+const layout = ({children}:{children:ReactNode}) => {
   return (
-    <div>admin dashbaord layout</div>
+    <><DashboardShell>{children}</DashboardShell></>
   )
 }
 

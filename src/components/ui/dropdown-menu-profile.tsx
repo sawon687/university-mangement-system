@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { IUser } from "../../type";
-import { useLoggedOut } from "../../hook/auth.hook";
+import { useLoggedOut } from "../../hooks/auth.hook";
 import { toast } from "./toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";

@@ -10,7 +10,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { Spinner } from "../ui/spinner";
 import { toast } from "../ui/toast";
 
-import { useVerify } from "../../hook/auth.hook";
+import { useVerify } from "../../hooks/auth.hook";
 
 const RESEND_COOLDOWN = 60;
 

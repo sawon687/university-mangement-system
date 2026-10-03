@@ -16,7 +16,7 @@ import {
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 import { toast } from "../ui/toast";
-import { useForgotPassword } from "../../hook/auth.hook";
+import { useForgotPassword } from "../../hooks/auth.hook";
 import { forgotPasswordSchema } from '../../validation';
 import { useRouter } from 'next/navigation';
 

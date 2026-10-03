@@ -16,14 +16,13 @@ import { toast } from "../ui/toast";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { registerSchema } from '../../validation';
-import { useRegister } from '../../hook/auth.hook';
+import { useRegister } from '../../hooks/auth.hook';
 import { isValid } from 'zod/v3';
 import { Spinner } from '../ui/spinner';
 import { useRouter } from 'next/navigation';
+import { inputClass } from '../../utils/input-class';
 
 
-const inputClass =
-  "border-2 focus:border-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary";
 
 export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);

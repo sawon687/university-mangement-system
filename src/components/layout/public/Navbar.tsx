@@ -8,7 +8,7 @@ import Image from "next/image";
 import Logo from "../../../assets/Logo";
 import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
-import { useGetMe } from "../../../hook/auth.hook";
+import { useGetMe } from "../../../hooks/auth.hook";
 import { IUser } from "../../../type";
 import { DropdownMenuProfile } from "../../ui/dropdown-menu-profile";
 import {

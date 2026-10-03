@@ -17,7 +17,7 @@ import {
   LockKeyhole,
   ShieldCheck,
 } from "lucide-react";
-import { useUpdatePassword } from "../../hook/auth.hook";
+import { useUpdatePassword } from "../../hooks/auth.hook";
 import { toast } from '../ui/toast';
 import { useSearchParams } from 'next/navigation';
 import { Spinner } from '../ui/spinner';

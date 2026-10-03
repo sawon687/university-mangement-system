@@ -13,14 +13,14 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
 import { loginSchema } from "../../validation";
-import { useLogin } from "../../hook/auth.hook";
+import { useLogin } from "../../hooks/auth.hook";
 import { toast } from "../ui/toast";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Spinner } from '../ui/spinner';
 import { useRouter } from 'next/navigation';
-const inputClass =
-  "border-2 focus:border-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary";
+import { inputClass } from '../../utils/input-class';
+
 export function LoginForm() {
   const { mutate: login, isPending, isError } = useLogin();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
