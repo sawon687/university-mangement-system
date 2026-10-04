@@ -9,7 +9,7 @@ export interface IProgram{
   totalCredits: number;
   semester: number;
   semesterType: string;
-  description: string;
+  description?: string;
   admissionFee: number;
   tuitionFee: number;
   perCreditFee: number;

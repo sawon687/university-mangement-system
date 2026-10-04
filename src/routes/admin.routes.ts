@@ -34,8 +34,8 @@ export const adminRoutes = [
         icon: UserRoundCheck,
       },
       {
-        title: "Courses",
-        url: "/dashboard/courses",
+        title: "Courses Assign",
+        url: `${prefix}/courses`,
         icon: BookOpen,
       },
       {

@@ -1,8 +1,11 @@
-
 import { GraduationCap } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import ProgramsPage from '../../../../components/modules/programs/programs-page';
+
+import Link from "next/link";
+import ProgramList from "../../../../components/modules/programs/program-all-card";
+import { Suspense } from "react";
+import ProgramListSkeleton from "../../../../components/modules/programs/program.loading";
+import { Button } from '../../../../components/ui/button';
 
 export default function page() {
   return (
@@ -17,13 +20,14 @@ export default function page() {
           </p>
         </div>
 
-        <Button>
+        <Button  render={<Link href={`/admin/programs/create`} />}>
           <GraduationCap className="mr-2 size-4" />
           Create Program
         </Button>
       </div>
-
-      <ProgramsPage />
+  
+        <ProgramList />
+ 
     </div>
   );
 }
