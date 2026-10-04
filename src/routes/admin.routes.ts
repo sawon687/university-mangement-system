@@ -40,7 +40,7 @@ export const adminRoutes = [
       },
       {
         title: "Semesters",
-        url: "/dashboard/semesters",
+        url: `${prefix}/semesters`,
         icon: CalendarDays,
       },
     ],

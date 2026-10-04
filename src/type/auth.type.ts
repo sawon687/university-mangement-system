@@ -54,3 +54,35 @@ export interface IUser{
     userPhoto:string,
     
 }
+export interface IUser {
+  name: string;
+  email: string;
+  role: (typeof Role)[keyof typeof Role];
+  password: string;
+  phone: string;
+  userStatus:string
+  instructor:Instructor
+}
+
+export const Role = {
+  STUDENT: "STUDENT",
+  INSTRUCTOR: "INSTRUCTOR",
+  ADMIN: "ADMIN",
+} as const;
+
+export interface Instructor {
+  phone: string;
+  gender: string;
+  dateOfBirth: Date;
+  address: string;
+  designation: string;
+  department: {
+    name: string;
+  };
+  bio: string;
+  specialization: string;
+  qualification: string;
+  experience: string;
+  profilePhoto?: string;
+  teacherCode: string;
+}

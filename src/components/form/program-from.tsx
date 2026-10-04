@@ -326,7 +326,7 @@ console.log('programdata',programdata)
                     name={field.name}
                     type="number"
                     id={field.name}
-                    value={field.state.value}
+                    value={Number(field.state.value)}
                     onChange={(e) => field.handleChange(Number(e.target.value))}
                     onBlur={field.handleBlur}
                     className={inputClass}
@@ -348,7 +348,7 @@ console.log('programdata',programdata)
                     name={field.name}
                     type="number"
                     id={field.name}
-                    value={field.state.value}
+                    value={Number(field.state.value)}
                     onChange={(e) => field.handleChange(Number(e.target.value))}
                     onBlur={field.handleBlur}
                     className={inputClass}
@@ -368,7 +368,7 @@ console.log('programdata',programdata)
                   <FieldLabel>Per Credit Fee</FieldLabel>
                   <Input
                     type="number"
-                    value={field.state.value}
+                    value={Number(field.state.value)}
                     onChange={(e) => field.handleChange(Number(e.target.value))}
                     className={inputClass}
                   />
@@ -387,7 +387,7 @@ console.log('programdata',programdata)
                   <FieldLabel>Total Estimated Fee</FieldLabel>
                   <Input
                     type="number"
-                    value={field.state.value}
+                    value={Number(field.state.value)}
                     onChange={(e) => field.handleChange(Number(e.target.value))}
                     className={inputClass}
                   />

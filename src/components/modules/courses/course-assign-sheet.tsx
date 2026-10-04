@@ -29,51 +29,53 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { ICourse } from '../../../type/courses.type';
+import { IUser } from '../../../type';
 
-const instructors = [
-  {
-    id: "1",
-    name: "Dr. Rahim Ahmed",
-    email: "rahim.ahmed@unisphere.edu",
-    teacherCode: "TCH-001",
-    department: "Computer Science & Engineering",
-    designation: "Associate Professor",
-    status: "ACTIVE",
-  },
-  {
-    id: "2",
-    name: "Md. Tanvir Hasan",
-    email: "tanvir.hasan@unisphere.edu",
-    teacherCode: "TCH-002",
-    department: "Computer Science & Engineering",
-    designation: "Assistant Professor",
-    status: "ACTIVE",
-  },
-  {
-    id: "3",
-    name: "Nusrat Jahan",
-    email: "nusrat.jahan@unisphere.edu",
-    teacherCode: "TCH-003",
-    department: "Computer Science & Engineering",
-    designation: "Lecturer",
-    status: "ACTIVE",
-  },
-];
+// const instructors = [
+//   {
+//     id: "1",
+//     name: "Dr. Rahim Ahmed",
+//     email: "rahim.ahmed@unisphere.edu",
+//     teacherCode: "TCH-001",
+//     department: "Computer Science & Engineering",
+//     designation: "Associate Professor",
+//     status: "ACTIVE",
+//   },
+//   {
+//     id: "2",
+//     name: "Md. Tanvir Hasan",
+//     email: "tanvir.hasan@unisphere.edu",
+//     teacherCode: "TCH-002",
+//     department: "Computer Science & Engineering",
+//     designation: "Assistant Professor",
+//     status: "ACTIVE",
+//   },
+//   {
+//     id: "3",
+//     name: "Nusrat Jahan",
+//     email: "nusrat.jahan@unisphere.edu",
+//     teacherCode: "TCH-003",
+//     department: "Computer Science & Engineering",
+//     designation: "Lecturer",
+//     status: "ACTIVE",
+//   },
+// ];
 
-const course = {
-  id: "course-103",
-  title: "Discrete Mathematics",
-  code: "CSE-103",
-  credit: 3,
-  semester: 1,
-};
+
 
 const ITEMS_PER_PAGE = 2;
-
-export default function CoursesSheetSide() {
+interface props{
+course:ICourse&{id:string}
+instructors:IUser[]
+}
+export default function CoursesSheetSide({course,instructors}:props) {
   const [selectedInstructorId, setSelectedInstructorId] = useState<
     string | null
   >(null);
+
+  console.log('instrutorr',instructors)
+  console.log('course',course)
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -154,7 +156,7 @@ export default function CoursesSheetSide() {
                       <span className="text-xs text-muted-foreground">•</span>
 
                       <span className="text-xs text-muted-foreground">
-                        Semester {course.semester}
+                        Semester {course.semesterNumber}
                       </span>
                     </div>
                   </div>
@@ -235,7 +237,7 @@ export default function CoursesSheetSide() {
                               variant="secondary"
                               className="hidden shrink-0 text-[10px] sm:inline-flex"
                             >
-                              {instructor.status}
+                              {instructor.userStatus}
                             </Badge>
                           </div>
 
@@ -249,14 +251,14 @@ export default function CoursesSheetSide() {
                             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                               <UserRound className="size-3.5 shrink-0" />
 
-                              <span>{instructor.teacherCode}</span>
+                              <span>{instructor?.instructor?.teacherCode}</span>
                             </div>
 
                             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                               <BadgeCheck className="size-3.5 shrink-0" />
 
                               <span className="truncate">
-                                {instructor.designation}
+                                {instructor?.instructor?.designation}
                               </span>
                             </div>
                           </div>
@@ -265,7 +267,7 @@ export default function CoursesSheetSide() {
                             <Building2 className="size-3.5 shrink-0" />
 
                             <span className="truncate">
-                              {instructor.department}
+                              {instructor?.instructor?.department?.name}
                             </span>
                           </div>
                         </div>

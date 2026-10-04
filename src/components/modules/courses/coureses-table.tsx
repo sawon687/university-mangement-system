@@ -134,6 +134,7 @@ const queryParams: QueryParms = {
 
 const { data: result, isLoading } = useGetAssignmentData(queryParams);
   const courses = result?.data?.course || [];
+  const instructor=result?.data?.instructor || []
   console.log("result", courses);
   const { data } = useGetDepartment("");
   console.log("selectDept", selectDep);
@@ -260,7 +261,8 @@ const { data: result, isLoading } = useGetAssignmentData(queryParams);
                     <TableCell>
                       <div className="flex justify-end gap-2">
                         {/* Assign */}
-                        {course.status === "UNASSIGNED" && <CoursesSheetSide />}
+  
+                        {course.status === "UNASSIGNED" && <CoursesSheetSide course={course} instructors={instructor}  />}
                       </div>
                     </TableCell>
                   </TableRow>
