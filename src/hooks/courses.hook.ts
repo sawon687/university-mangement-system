@@ -5,7 +5,7 @@ import { useParams } from './params.hook';
 
 
 export function useGetAssignmentData(params:QueryParms){
-   
+ 
     return useQuery({
         queryKey:['departments',params],
         queryFn:()=>getCourseAsssignmentData(params),

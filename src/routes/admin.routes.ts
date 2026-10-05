@@ -29,8 +29,8 @@ export const adminRoutes = [
       },
 
       {
-        title: "Instructors",
-        url: `${prefix}/instructors`,
+        title: "Users",
+        url: `${prefix}/users`,
         icon: UserRoundCheck,
       },
       {

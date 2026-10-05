@@ -1,7 +1,8 @@
-'use client'
-import { Building2, Plus } from "lucide-react";
+"use client";
 
-import { Button } from "@/components/ui/button";
+import { Plus, Users2 } from "lucide-react";
+import { useState } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -10,47 +11,49 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import DepartmentFrom from '../form/department-from';
-import { useState } from 'react';
 
-const SemesterCreate = () => {
-    const [open ,setOpen]=useState(false)
-    
+import CreateIntructorForm from "../form/create-intructor-form";
+import { Button } from "../ui/button";
+
+const CreateInstructor = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button >
-            <Plus className="mr-2 size-4" />
-            Add Semester
+          <Button className="gap-2">
+            <Plus className="size-4" />
+            Create Instructor
           </Button>
         }
       />
 
-      <DialogContent className="overflow-hidden p-0 sm:max-w-lg">
-        {/* Header */}
+      <DialogContent className="overflow-hidden p-0 sm:max-w-2xl">
+        {/* Dialog Header */}
         <DialogHeader className="border-b bg-muted/20 px-6 py-5">
           <div className="flex items-start gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <Building2 className="size-5 text-primary" />
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400">
+              <Users2 className="size-5" />
             </div>
 
-            <div className="space-y-1">
-              <DialogTitle className="text-lg">Create Department</DialogTitle>
+            <div className="space-y-1 text-left">
+              <DialogTitle className="text-lg font-semibold">
+                Create Instructor
+              </DialogTitle>
 
               <DialogDescription className="text-sm leading-5">
-                Create a new academic department and configure its basic
-                information.
+                Create a new instructor account for your university.
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
         {/* Form */}
-     
+        <CreateIntructorForm onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default SemesterCreate;
+export default CreateInstructor;

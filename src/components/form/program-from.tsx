@@ -122,7 +122,7 @@ console.log('programdata',programdata)
                   <Input
                     name={field.name}
                     id={field.name}
-                    value={field.state.value}
+                    value={String(field.state.value ?? "")}
                     onChange={(e) => field.handleChange(e.target.value)}
                     onBlur={field.handleBlur}
                     placeholder="e.g. B.Sc. in Computer Science & Engineering"
@@ -249,9 +249,8 @@ console.log('programdata',programdata)
                   <FieldLabel htmlFor={field.name}>Duration (Years)</FieldLabel>
                   <Input
                     name={field.name}
-                    type="number"
                     id={field.name}
-                    value={field.state.value}
+                    value={Number(field.state.value)}
                     onChange={(e) => field.handleChange(Number(e.target.value))}
                     onBlur={field.handleBlur}
                     placeholder="Duration"

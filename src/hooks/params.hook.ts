@@ -14,9 +14,33 @@ export const useParams = (payload: QueryParms) => {
   if (payload.departmentId) {
     params.set("departmentId", payload.departmentId);
   }
+  if(payload.page)
+  {
+        params.set("page", payload.page.toString());  
+        
+  }
+  if(payload.limit)
+  {
+    params.set("limit", payload.limit.toString());
+  }
+  if(payload.role && payload.role!=='All Role')
+  {
+     params.set('role',payload.role)
+  }
+  if(payload.department && payload.department!=='All Department')
+  {
+     params.set('department',payload.department)
+  }
+  if(payload.status&& payload.status!=='All Status')
+  {
+      params.set('status',payload.status)
+  }
+  if(payload.userSearch){
+     params.set('search',payload.userSearch)
+  }
 
-  params.set("page", payload.page.toString());
-  params.set("limit", payload.limit.toString());
+
+  
 
   return params;
 };
