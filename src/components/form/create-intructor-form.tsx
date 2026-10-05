@@ -21,28 +21,68 @@ import {
 } from "@/components/ui/select";
 
 import { useForm } from "@tanstack/react-form";
-import { Field, FieldGroup, FieldLabel } from "../ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { inputClass } from "../../utils/input-class";
+import z from "zod"
+import { IDepartment } from "../../type";
+import { useGetDepartment } from "../../hooks/department.hook";
+import { toast } from "../ui/toast";
+import { useCreateInsructor } from "../../hooks/instructor.hook";
+import { Spinner } from "../ui/spinner";
+import { instructorcreateValidationSchema } from '../../validation';
 
 interface CreateInstructorFormProps {
   onSuccess?: () => void;
 }
 
-const CreateIntructorForm = ({
-  onSuccess,
-}: CreateInstructorFormProps) => {
+const CreateIntructorForm = ({ onSuccess }: CreateInstructorFormProps) => {
+  const { data } = useGetDepartment("");
+  const { mutate: register, isPending } = useCreateInsructor();
+  console.log("data", data);
+  const departments = data?.data || [];
+  console.log("deaprtmens", departments);
   const form = useForm({
     defaultValues: {
       name: "",
       email: "",
-      department: "",
+      departmentId: "",
       gender: "",
     },
+    validators:{
+        onSubmit:instructorcreateValidationSchema
+    },
 
-    onSubmit: async ({ value }) => {
+    onSubmit: ({ value }) => {
       console.log(value);
 
-      // API call এখানে করবে
+      const registerData = {
+        email: value.email,
+        name: value.name,
+        gender: value.gender,
+        departmentId: value.departmentId,
+      };
+
+      register(registerData, {
+        onSuccess: (res) => {
+          toast.add({
+            title: "Register success",
+            description: res.message,
+            type: "success",
+          });
+          onSuccess
+        },
+        
+
+        onError: (error: any) => {
+          console.log("erros", error.data);
+
+          toast.add({
+            title: "Register feild",
+            description: error.data.message || error.errors.message,
+            type: "Error",
+          });
+        },
+      });
 
       onSuccess?.();
     },
@@ -61,9 +101,7 @@ const CreateIntructorForm = ({
             {/* Personal Information */}
             <div className="space-y-4">
               <div>
-                <h2 className="text-sm font-semibold">
-                  Personal Information
-                </h2>
+                <h2 className="text-sm font-semibold">Personal Information</h2>
 
                 <p className="mt-1 text-xs text-muted-foreground">
                   Enter the instructor's personal and contact details.
@@ -73,55 +111,63 @@ const CreateIntructorForm = ({
               <div className="grid gap-4 md:grid-cols-2">
                 {/* Full Name */}
                 <form.Field name="name">
-                  {(field) => (
-                    <Field className="space-y-2">
-                      <FieldLabel htmlFor={field.name}>
-                        Full Name
-                      </FieldLabel>
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    return (
+                      <Field className="space-y-2">
+                        <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
 
-                      <div className="relative">
-                        <UserRound className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <div className="relative">
+                          <UserRound className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 
-                        <Input
-                          id={field.name}
-                          name={field.name}
-                          placeholder="Md. Rahim Uddin"
-                          value={field.state.value}
-                          className={`h-10 pl-9 ${inputClass}`}
-                          onChange={(e) =>
-                            field.handleChange(e.target.value)
-                          }
-                        />
-                      </div>
-                    </Field>
-                  )}
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            placeholder="Md. Rahim Uddin"
+                            value={field.state.value}
+                            className={`h-10 pl-9 ${inputClass}`}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                          />
+                        </div>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    );
+                  }}
                 </form.Field>
 
                 {/* Email */}
                 <form.Field name="email">
-                  {(field) => (
-                    <Field className="space-y-2">
-                      <FieldLabel htmlFor={field.name}>
-                        Email Address
-                      </FieldLabel>
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    return (
+                      <Field data-isvalid={isInvalid} className="space-y-2">
+                        <FieldLabel htmlFor={field.name}>
+                          Email Address
+                        </FieldLabel>
 
-                      <div className="relative">
-                        <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <div className="relative">
+                          <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 
-                        <Input
-                          id={field.name}
-                          name={field.name}
-                          type="email"
-                          placeholder="rahim@example.com"
-                          value={field.state.value}
-                          className={`h-10 pl-9 ${inputClass}`}
-                          onChange={(e) =>
-                            field.handleChange(e.target.value)
-                          }
-                        />
-                      </div>
-                    </Field>
-                  )}
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            type="email"
+                            placeholder="rahim@example.com"
+                            value={field.state.value}
+                            className={`h-10 pl-9 ${inputClass}`}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                          />
+                        </div>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    );
+                  }}
                 </form.Field>
               </div>
             </div>
@@ -129,9 +175,7 @@ const CreateIntructorForm = ({
             {/* Academic Information */}
             <div className="space-y-4 border-t pt-5">
               <div>
-                <h2 className="text-sm font-semibold">
-                  Academic Information
-                </h2>
+                <h2 className="text-sm font-semibold">Academic Information</h2>
 
                 <p className="mt-1 text-xs text-muted-foreground">
                   Assign the instructor to a department and specify their
@@ -141,93 +185,82 @@ const CreateIntructorForm = ({
 
               <div className="grid gap-4 md:grid-cols-2">
                 {/* Department */}
-                <form.Field name="department">
-                  {(field) => (
-                    <Field className="space-y-2">
-                      <FieldLabel htmlFor={field.name}>
-                        Department
-                      </FieldLabel>
-
-                      <Select
-                        value={field.state.value}
-                        onValueChange={(value) =>
-                          field.handleChange(value)
-                        }
-                      >
-                        <SelectTrigger
-                          id={field.name}
-                          className="h-10 w-full"
+                <form.Field name="departmentId">
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    const selectDeaprtments: IDepartment = departments?.find(
+                      (dept: IDepartment) => dept.id === field.state.value,
+                    );
+                    return (
+                      <Field data-isvalid={isInvalid} className="space-y-1.5">
+                        <FieldLabel htmlFor={field.name}>Department</FieldLabel>
+                        <Select
+                          value={field.state.value}
+                          onValueChange={(value) => {
+                            field.handleChange(value ?? "");
+                            console.log("value", value);
+                          }}
                         >
-                          <div className="flex items-center gap-2">
-                            <Building2 className="size-4 text-muted-foreground" />
-
-                            <SelectValue placeholder="Select department" />
-                          </div>
-                        </SelectTrigger>
-
-                        <SelectContent>
-                          <SelectItem value="cse">
-                            Computer Science & Engineering
-                          </SelectItem>
-
-                          <SelectItem value="eee">
-                            Electrical & Electronic Engineering
-                          </SelectItem>
-
-                          <SelectItem value="bba">
-                            Business Administration
-                          </SelectItem>
-
-                          <SelectItem value="english">
-                            English
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  )}
+                          <SelectTrigger className={inputClass}>
+                            <SelectValue placeholder="Select Department">
+                              {selectDeaprtments?.name}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {departments?.map((dept: IDepartment) => (
+                              <SelectItem key={dept.id} value={dept.id}>
+                                {dept.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    );
+                  }}
                 </form.Field>
 
                 {/* Gender */}
                 <form.Field name="gender">
-                  {(field) => (
-                    <Field className="space-y-2">
-                      <FieldLabel htmlFor={field.name}>
-                        Gender
-                      </FieldLabel>
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    return (
+                      <Field data-isvalid={isInvalid} className="space-y-2">
+                        <FieldLabel htmlFor={field.name}>Gender</FieldLabel>
 
-                      <Select
-                        value={field.state.value}
-                        onValueChange={(value) =>
-                          field.handleChange(value)
-                        }
-                      >
-                        <SelectTrigger
-                          id={field.name}
-                          className="h-10 w-full"
+                        <Select
+                          value={field.state.value}
+                          onValueChange={(value) =>
+                            field.handleChange(value ?? "")
+                          }
                         >
-                          <div className="flex items-center gap-2">
-                            <VenusAndMars className="size-4 text-muted-foreground" />
+                          <SelectTrigger
+                            id={field.name}
+                            className="h-10 w-full"
+                          >
+                            <div className="flex items-center gap-2">
+                              <VenusAndMars className="size-4 text-muted-foreground" />
 
-                            <SelectValue placeholder="Select gender" />
-                          </div>
-                        </SelectTrigger>
+                              <SelectValue placeholder="Select gender" />
+                            </div>
+                          </SelectTrigger>
 
-                        <SelectContent>
-                          <SelectItem value="male">
-                            Male
-                          </SelectItem>
-
-                          <SelectItem value="female">
-                            Female
-                          </SelectItem>
-
-                          <SelectItem value="other">
-                            Other
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  )}
+                          <SelectContent>
+                            {["Male", "Female", "Other"].map((item) => (
+                              <SelectItem value={item.toUpperCase()}>{item}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    );
+                  }}
                 </form.Field>
               </div>
             </div>
@@ -240,9 +273,7 @@ const CreateIntructorForm = ({
                 </div>
 
                 <div className="space-y-1">
-                  <h3 className="text-sm font-semibold">
-                    Account credentials
-                  </h3>
+                  <h3 className="text-sm font-semibold">Account credentials</h3>
 
                   <p className="text-xs leading-5 text-muted-foreground">
                     A temporary password and teacher code will be generated
@@ -267,10 +298,17 @@ const CreateIntructorForm = ({
 
           <Button
             type="submit"
+            disabled={isPending}
             className="h-10 bg-orange-500 px-5 text-white hover:bg-orange-600"
           >
-            <BriefcaseBusiness className="mr-2 size-4" />
-            Create Instructor
+            {isPending ? (
+              <Spinner />
+            ) : (
+              <>
+                <BriefcaseBusiness className="mr-2 size-4" />
+                Create Instructor
+              </>
+            )}
           </Button>
         </div>
       </form>
