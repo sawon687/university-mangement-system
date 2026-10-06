@@ -1,5 +1,7 @@
+
 import apiFetch from "../lib/api-ofetch";
-import { IProgram } from "../type/program.type";
+import { IProgram } from '../type/program.type';
+
 
 export function getAllPrograms() {
   return apiFetch(`/admin/all-program`, {
@@ -15,3 +17,4 @@ export function adminCreateProgram(
     body: payload,
   });
 }
+

@@ -24,6 +24,7 @@ const Navbar = () => {
 
   const navItems = [
     { label: "Home", url: "/" },
+        { label: "Programs", url: "/programs" },
     { label: "About", url: "/about" },
   ];
 
@@ -34,7 +35,7 @@ const Navbar = () => {
         <Logo flexColRow="flex-row" />
 
         {/* Navigation */}
-        <nav className="hidden items-center gap-1 rounded-xl border bg-muted/30 p-1 md:flex">
+        <nav className="hidden items-center gap-1   md:flex">
           {navItems.map((item) => {
             const isActive =
               item.url === "/"
@@ -46,10 +47,10 @@ const Navbar = () => {
                 key={item.url}
                 href={item.url}
                 className={cn(
-                  "group relative flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium",
+                  "group relative flex items-center gap-2 text-sm font-medium",
                   "transition-colors duration-300 ease-out",
                   isActive
-                    ? "bg-background text-primary shadow-sm"
+                    ? "bg-background text-primary "
                     : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
                 )}
               >
@@ -66,16 +67,7 @@ const Navbar = () => {
 
                 {item.label}
 
-                {/* Bottom Indicator */}
-                <span
-                  className={cn(
-                    "absolute inset-x-3 -bottom-1 h-0.5 rounded-full bg-primary",
-                    "origin-center transition-all duration-300 ease-out",
-                    isActive
-                      ? "scale-x-100 opacity-100"
-                      : "scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-60",
-                  )}
-                />
+             
               </Link>
             );
           })}

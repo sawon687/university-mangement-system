@@ -1,9 +1,9 @@
-import { IDepartment } from './departments.type';
+import { IDepartment } from "./departments.type";
 
-export interface IProgram{
+export interface IProgram {
   id: string;
   name: string;
-  department:IDepartment;
+  department: IDepartment;
   degreeType: string;
   duration: number;
   totalCredits: number;
@@ -15,4 +15,15 @@ export interface IProgram{
   perCreditFee: number;
   totalFee: number;
   isActive: boolean;
-};
+}
+
+export interface ProgramMetaData {
+  currentPage: number;
+  total: number
+  totalPages: number;
+}
+
+export interface InitialPrograms {
+  programs: IProgram[];
+  meta: ProgramMetaData;
+}

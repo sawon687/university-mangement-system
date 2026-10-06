@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import Link from "next/link";
 import Logo from "../../../assets/Logo";
@@ -98,7 +99,7 @@ const Footer = () => {
         {/* Bottom */}
         <div className="flex flex-col gap-4 border-t py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} Your Company. All rights reserved.
+            {/* © {new Date().getFullYear()} Your Company. All rights reserved. */}
           </p>
 
           <p>

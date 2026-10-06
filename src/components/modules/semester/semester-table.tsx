@@ -173,7 +173,7 @@ const SemesterTable = () => {
                   <TableCell>
                     {semester.id && (
                       <SemesterCreate
-                        editData={{ ...semester, id: semester.id }}
+                        editData={semester}
                         type="edit"
                       />
                     )}
