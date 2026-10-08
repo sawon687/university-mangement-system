@@ -21,6 +21,8 @@ import { adminRoutes } from "../../routes/admin.routes";
 import { studentroutes } from "../../routes/student.routes";
 import { SidbarItems } from "../../type/sidebar.type";
 import { usePathname } from "next/navigation";
+import { useGetMe } from '../../hooks/auth.hook';
+import { IUser } from '../../type';
 // This is sample data.
 const sidebarRoutes = {
   ADMIN: adminRoutes,
@@ -29,10 +31,13 @@ const sidebarRoutes = {
 export function DashboardSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+ const me= useGetMe()
+   const user: IUser | undefined = me?.data?.data;
   const { state } = useSidebar();
-  const role = "ADMIN";
+  const role = user?.role;                                                                                                                                                                                                                                                                                                                                                            
   const pathname = usePathname();
-  const routes: SidbarItems = sidebarRoutes[role] || [];
+  const routes: SidbarItems =
+    role === "ADMIN" || role === "STUDENT" ? sidebarRoutes[role] : [];
   console.log("state", state);
   return (
     <Sidebar collapsible="icon" {...props}>

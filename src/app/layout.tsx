@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       )}
     >
       <Provider>
-        <body className="min-h-full flex flex-col" cz-shortcut-listen="true">
+        <body className="min-h-full flex flex-col justify-center  " cz-shortcut-listen="true">
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
         </body>

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Search, Filter } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,11 +17,13 @@ import {
   ProgramMetaData,
 } from "../../../type/program.type";
 import ProgramCard from "./programCard";
-import { useState } from 'react';
-import { useGetDepartment } from '../../../hooks/department.hook';
-import { IDepartment } from '../../../type';
-import { inputClass } from '../../../utils/input-class';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useGetDepartment } from "../../../hooks/department.hook";
+import { IDepartment } from "../../../type";
+import { inputClass } from "../../../utils/input-class";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useParams } from "../../../hooks/params.hook";
+import { useDebaunce } from '../../../hooks/debaunce.hook';
 
 const bgHeaderColor = {
   // CSE
@@ -57,15 +59,41 @@ interface props {
 }
 const ProgramPublic = ({ data }: props) => {
   const programs = data?.programs || [];
-              useSearchParams()
-  const reuslt= useGetDepartment('')
-  const departments=reuslt?.data?.data || []
-console.log('departments',departments)
-   const [department, setDepartment] = useState("All Department");
-  const [studyFormat, setStudyFormat] = useState("TRI_SEMESTER");
+  const params = useSearchParams();
+  const reuslt = useGetDepartment("");
+  const departments = reuslt?.data?.data || [];
+  console.log("departments", departments);
+  const [department, setDepartment] = useState("All Department");
+  const [studyFormat, setStudyFormat] = useState("All Study");
+  const [degree, setDegreee] = useState("All Degree");
+  const [search, setSearch] = useState("");
+  const searchTram=useDebaunce(search)
+  const router = useRouter();
   console.log("first", data);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(params);
+    const departmentvalue = searchParams.get("department") || "CSE";
+    const degreeTypevalue = searchParams.get("degree") || "BSC";
+    const studyvalue = searchParams.get("study") || "TRI_SEMESTER";
 
+    if (searchParams) {
+      if (departmentvalue && department !== departmentvalue) {
+        searchParams.set("department", department);
+      }
+      if (degreeTypevalue && degree !== degreeTypevalue) {
+        searchParams.set("degree", degree);
+      }
+      if (studyvalue && studyFormat !== studyvalue) {
+        searchParams.set("study", studyFormat);
+      }
+      if(searchParams)
+      {
+         searchParams.set('search',searchTram)
+      }
+      router.push(`/programs?${searchParams.toString()}`, { scroll: false });
+    }
+  }, [department, studyFormat, degree,searchTram]);
 
   return (
     <div>
@@ -77,29 +105,31 @@ console.log('departments',departments)
             {/* Search */}
             <div className="relative min-w-0 flex-1">
               <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-
               <Input
-                readOnly
+      
                 placeholder="Search by program, department, or degree..."
-                className="h-12 rounded-xl border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-orange-500 focus-visible:ring-1 focus-visible:ring-orange-500"
+                className="h-12 rounded-xl border-slate-200
+                 bg-slate-50 pl-11 pr-4 text-sm text-slate-900
+                  placeholder:text-slate-400 focus-visible:border-primary
+                  focus-visible:ring-1 focus-visible:ring-primary"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
+             
             </div>
 
             {/* Filters */}
             <div className="flex flex-col gap-2.5 sm:flex-row">
               {/* Degree */}
-              <Select>
-                <SelectTrigger className={inputClass}>
+              <Select
+                value={degree}
+                onValueChange={(value) => setDegreee(value ?? "")}
+              >
+                <SelectTrigger className={`${inputClass} w-[160px]`}>
                   <SelectValue placeholder="Select Degree" />
                 </SelectTrigger>
                 <SelectContent>
-                  {[
-                    "BSC",
-                    "MSC",
-                    "BA",
-                    "BBA",
-                    "MBA",
-                  ].map((value) => (
+                  {["BSC", "MSC", "BA", "BBA", "MBA"].map((value) => (
                     <SelectItem key={value} value={value}>
                       {value}
                     </SelectItem>
@@ -109,19 +139,18 @@ console.log('departments',departments)
 
               {/* Department */}
               <Select
-                
                 value={department}
                 onValueChange={(value) =>
                   setDepartment(value ?? "All Department")
                 }
               >
-                <SelectTrigger className={inputClass}>
+                <SelectTrigger className={`${inputClass} w-[160px]`}>
                   <SelectValue placeholder="All Departments" />
                 </SelectTrigger>
 
                 <SelectContent>
-                  <SelectItem value="All Deparment">All Departments</SelectItem>
-                  {departments?.map((dep:IDepartment) => (
+                  <SelectItem value="All Department">All Departments</SelectItem>
+                  {departments?.map((dep: IDepartment) => (
                     <SelectItem key={dep.id} value={String(dep.code)}>
                       {dep.code}
                     </SelectItem>
@@ -130,22 +159,22 @@ console.log('departments',departments)
               </Select>
 
               {/* Study Format */}
-                   <Select
-                                  value={studyFormat}
-                                  onValueChange={(value) => setStudyFormat(value)}
-                                >
-                                  <SelectTrigger className={inputClass}>
-                                    <SelectValue placeholder="Select System" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {[
-                                      { value: "BI_SEMESTER", label: "Semester (2 terms)" },
-                                      { value: "TRI_SEMESTER", label: "Trimester (3 terms)" },
-                                    ].map((sem) => (
-                                      <SelectItem value={sem.value}>{sem.label}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+              <Select
+                value={studyFormat}
+                onValueChange={(value) => setStudyFormat(value ?? "")}
+              >
+                <SelectTrigger className={`${inputClass} w-[160px]`}>
+                  <SelectValue placeholder="Select System" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    { value: "TRI_SEMESTER", label: "Trimester (3 terms)" },
+                    { value: "BI_SEMESTER", label: "Semester (2 terms)" },
+                  ].map((sem) => (
+                    <SelectItem value={sem.value}>{sem.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -186,7 +215,13 @@ console.log('departments',departments)
             const headerClass =
               bgHeaderColor[headerKey] ?? "bg-slate-800 text-white";
 
-            return <ProgramCard key={program.id} program={program} headerClass={headerClass} />;
+            return (
+              <ProgramCard
+                key={program.id}
+                program={program}
+                headerClass={headerClass}
+              />
+            );
           })}
         </div>
 

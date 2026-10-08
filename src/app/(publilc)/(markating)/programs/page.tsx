@@ -1,25 +1,20 @@
-import {
-
-  Sparkles,
- 
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ProgramPublic from "../../../../components/modules/program.public/program.public";
-import { getAllPublicPrograms } from '../../../../api/program.public.api';
+import { getAllPublicPrograms } from "../../../../api/program.public.api";
+import { QueryParms } from '../../../../type/courses.type';
+import { Suspense } from 'react';
 
-
-
-
-
-
-const Page = async () => {
-  const result = await getAllPublicPrograms()
+const Page = async ({searchParams}:{searchParams:QueryParms}) => {
+    const params=await searchParams
+  const result = await getAllPublicPrograms(params);
   const data = result?.data;
+  
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-primary selection:text-white">
+    <main className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-primary selection:text-white ">
       {/* Ultra-Modern Hero Section with Video-like Dynamic Animation (Pure Light Mode) */}
       <section className="relative overflow-hidden bg-gradient-to-b from-orange-50/80 via-white to-[#F8FAFC] pt-24 pb-16 lg:pt-28 lg:pb-20">
         {/* Animated Background Glowing Orbs (Simulating Video Background Effects) */}
@@ -55,10 +50,12 @@ const Page = async () => {
         </div>
       </section>
 
-      <ProgramPublic data={data} />
+     <Suspense fallback={<h1>h1....</h1>}>
+       <ProgramPublic data={data} />
+     </Suspense>
 
       {/* Modern CTA Section */}
-      <section className="mt-24 w-7xl mx-auto rounded-2xl mb-4 relative overflow-hidden bg-gradient-to-br from-orange-600 via-orange-500 to-amber-600 py-20 text-white shadow-2xl">
+      <section className="mt-24 max-w-7xl mx-auto rounded-2xl mb-4 relative overflow-hidden bg-gradient-to-br from-orange-600 via-orange-500 to-amber-600 py-20 text-white shadow-2xl">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_50%)] pointer-events-none" />
         <div className="mx-auto max-w-4xl px-4 text-center relative z-10">
           <h2 className="text-3xl font-black sm:text-4xl tracking-tight">

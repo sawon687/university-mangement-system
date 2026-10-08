@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { IProgram } from '../../../type/program.type';
 import { ArrowRight, Clock3, GraduationCap } from 'lucide-react';
 import { Button } from '../../ui/button';
+import Link from 'next/link';
+import AdmissionApply from '../../modal/admision-apply.modal';
 const ProgramCard = ({program,headerClass}:{program:IProgram,headerClass:string}) => {
   return (
     <div>
@@ -65,11 +67,7 @@ const ProgramCard = ({program,headerClass}:{program:IProgram,headerClass:string}
         </CardHeader>
 
         <CardContent className="flex flex-1 flex-col text-sm bg-slate-50">
-          <p className="line-clamp-3 text-slate-600 leading-relaxed">
-            {program.description ||
-              "No description available for this program."}
-          </p>
-
+  
           <div className="mt-6 space-y-3 text-xs bg-white p-4 rounded-2xl border border-gray-200">
             <div className="flex items-center justify-between">
               <span className="text-slate-500 font-medium">Total Credits</span>
@@ -116,12 +114,10 @@ const ProgramCard = ({program,headerClass}:{program:IProgram,headerClass:string}
         </CardContent>
 
         <CardFooter className="grid grid-cols-2 gap-3 p-6 bg-white">
-          <Button className="py-5">
-            Apply Now
-            <ArrowRight className="size-4 ml-1.5 group-hover/btn:translate-x-1 transition-transform" />
-          </Button>
-
-          <Button variant="outline" className="py-5 shadow-2xl">
+         
+             <AdmissionApply programId={program.id} />
+           
+          <Button render={<Link href={`/programs/${program.id}`}/>} variant="outline" className="py-5 shadow-2xl">
             Learn More
           </Button>
         </CardFooter>

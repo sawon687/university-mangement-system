@@ -22,13 +22,13 @@ export const studentroutes = [
       {
         name: "Overview",
         title: "Overview",
-        url: "/dashboard/student",
+        url: "/student",
         icon: LayoutDashboard,
       },
       {
         name: "Admission",
-        title: "Admission",
-        url: "/dashboard/student/admission",
+        title: "My Admission",
+        url: "/student/admission",
         icon: GraduationCap,
       },
       {

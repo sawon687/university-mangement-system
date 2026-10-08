@@ -2,6 +2,7 @@
 
 import {
   CreditCardIcon,
+  LayoutDashboard,
   LogOutIcon,
   SettingsIcon,
   UserIcon,
@@ -18,6 +19,7 @@ import { useLoggedOut } from "../../hooks/auth.hook";
 import { toast } from "./toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import Link from 'next/link';
 
 interface Props {
   user: IUser;
@@ -54,6 +56,8 @@ export function DropdownMenuProfile({ user }: Props) {
       },
     });
   };
+
+  const userDashbaordUrl=user.role=='ADMIN'?'admin':user.role=='STUDENT'?'student':user.role=='INSTRUCTOR'?'instructor':'/'
 
   return (
     <DropdownMenuContent
@@ -104,7 +108,11 @@ export function DropdownMenuProfile({ user }: Props) {
         <CreditCardIcon className="size-4" />
         <span>Billing</span>
       </DropdownMenuItem>
-
+      {/* dashbaord */}
+         <DropdownMenuItem render={<Link href={userDashbaordUrl} />} className="cursor-pointer gap-3 rounded-lg py-2.5">
+        <LayoutDashboard  className="size-4" />
+        <span>Dashboard</span>
+      </DropdownMenuItem>
       {/* Settings */}
       <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5">
         <SettingsIcon className="size-4" />
