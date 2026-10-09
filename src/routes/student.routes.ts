@@ -34,7 +34,7 @@ export const studentroutes = [
       {
         name: "Profile",
         title: "Profile",
-        url: "/dashboard/student/profile",
+        url: "/student/profile",
         icon: UserRound,
       },
       {

@@ -1,3 +1,4 @@
+import { IDepartment } from './departments.type'
 
 export interface ILogin{
     email:string
@@ -47,13 +48,27 @@ export interface IUpdatePassword{
 //   deletedAt DateTime? 
 //   isDeleted Boolean @default(false)
 
-export interface IUser{
-    name:string,
-    id:string,
-    email:string,
-    userPhoto:string,
+// export interface IUser{
+//     name:string,
+//     id:string,
+//     email:string,
+//     userPhoto:string,
+    
+// }
+
+export interface IStudentProfile{
+
+    phone:string,
+    dateOfBirth:string,
+    gender:string,
+    address:string,
+    department?:IDepartment,
+    departmentId?:string
+    profilePhoto?:string
+
     
 }
+
 export interface IUser {
   name: string;
   email: string;
@@ -61,7 +76,9 @@ export interface IUser {
   password: string;
   phone: string;
   userStatus:string
-  instructor:Instructor
+  emailVerified:boolean
+  studentProfile?:IStudentProfile
+  instructor?:Instructor
 }
 
 export const Role = {

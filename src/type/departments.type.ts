@@ -12,5 +12,5 @@ export interface IDepartment {
   description: string | null;
   createdAt?: string;
   updatedAt?: string;
-  _count: ICountDepartment;
+  _count?: ICountDepartment;
 }

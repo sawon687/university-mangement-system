@@ -32,35 +32,6 @@ import { Separator } from "@/components/ui/separator";
 import { ICourse } from '../../../type/courses.type';
 import { IUser } from '../../../type';
 
-// const instructors = [
-//   {
-//     id: "1",
-//     name: "Dr. Rahim Ahmed",
-//     email: "rahim.ahmed@unisphere.edu",
-//     teacherCode: "TCH-001",
-//     department: "Computer Science & Engineering",
-//     designation: "Associate Professor",
-//     status: "ACTIVE",
-//   },
-//   {
-//     id: "2",
-//     name: "Md. Tanvir Hasan",
-//     email: "tanvir.hasan@unisphere.edu",
-//     teacherCode: "TCH-002",
-//     department: "Computer Science & Engineering",
-//     designation: "Assistant Professor",
-//     status: "ACTIVE",
-//   },
-//   {
-//     id: "3",
-//     name: "Nusrat Jahan",
-//     email: "nusrat.jahan@unisphere.edu",
-//     teacherCode: "TCH-003",
-//     department: "Computer Science & Engineering",
-//     designation: "Lecturer",
-//     status: "ACTIVE",
-//   },
-// ];
 
 
 

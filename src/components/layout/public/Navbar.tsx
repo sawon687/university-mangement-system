@@ -9,18 +9,21 @@ import Logo from "../../../assets/Logo";
 import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
 import { useGetMe } from "../../../hooks/auth.hook";
-import { IUser } from "../../../type";
+
 import { DropdownMenuProfile } from "../../ui/dropdown-menu-profile";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
+import { IUser } from '../../../type';
 
 const Navbar = () => {
   const pathname = usePathname();
 
-  const me = useGetMe();
-  const user: IUser | undefined = me?.data?.data;
+  const {data}= useGetMe();
+  const me=data?.data?? ''
+  console.log('user',me)
+  const user: IUser | undefined = me;
 
   const navItems = [
     { label: "Home", url: "/" },
@@ -85,9 +88,9 @@ const Navbar = () => {
                 />
               }
             >
-              {user.userPhoto ? (
+              {user?.studentProfile?.profilePhoto ? (
                 <Image
-                  src={user.userPhoto}
+                  src={user.studentProfile?.profilePhoto}
                   alt={user.name || "Profile"}
                   width={40}
                   height={40}

@@ -39,3 +39,10 @@ export function getStudentAdmission() {
     method: "GET",
   });
 }
+
+export function getAdminStudentAdmission() {
+
+  return apiFetch(`/admin/studentadmissionsApplication`, {
+    method: "GET",
+  });
+}

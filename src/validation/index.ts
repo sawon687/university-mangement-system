@@ -4,3 +4,4 @@ export * from "./program.validation"
 export * from "./instructor.validation"
 export * from './course.validation'
 export * from './semester.validation'
+export * from "./student.Validation"

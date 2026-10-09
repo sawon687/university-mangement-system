@@ -2,6 +2,7 @@ import {
   BookOpen,
   Building2,
   CalendarDays,
+  FileText,
   GraduationCap,
   LayoutDashboard,
   UserRoundCheck,
@@ -26,6 +27,11 @@ export const adminRoutes = [
         title: "All Programs",
         url: `${prefix}/programs`,
         icon: GraduationCap,
+      },
+       {
+        title: "Student Admission",
+        url: `${prefix}/student-admission`,
+        icon: FileText,
       },
 
       {

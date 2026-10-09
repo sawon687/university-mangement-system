@@ -40,7 +40,7 @@ export function DashboardSidebar({
     role === "ADMIN" || role === "STUDENT" ? sidebarRoutes[role] : [];
   console.log("state", state);
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar  collapsible="icon" {...props}>
       <SidebarHeader>
         <div className="my-5 px-4">
           {" "}
