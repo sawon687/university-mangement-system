@@ -1,5 +1,6 @@
+import { useParams } from '../hooks/params.hook';
 import apiFetch from "../lib/api-ofetch";
-import { IAdmissionApplication } from "../type/admisson-applilcation.type";
+import { AdmissionQuery, IAdmissionApplication, ReviewAdmisson } from "../type/admisson-applilcation.type";
 
 export function userAdmisstionApplication(payload: IAdmissionApplication) {
   console.log("payload received:", payload);
@@ -40,9 +41,37 @@ export function getStudentAdmission() {
   });
 }
 
-export function getAdminStudentAdmission() {
+export function getAdminStudentAdmission(query:AdmissionQuery) {
+  const params=new URLSearchParams()
 
-  return apiFetch(`/admin/studentadmissionsApplication`, {
+  if(query.search?.trim)
+  {
+     params.set('serach',query.search)
+  }
+  if(query.status && query.status!=='All')
+  {
+     params.set('status',query.status)
+  }
+  return apiFetch(`/admin/studentadmissionsApplication?${params.toString()}`, {
     method: "GET",
+  
+  });
+}
+
+
+
+export function admissionStatusUpdate(payload: ReviewAdmisson) {
+  const { applicationId, status, rejectionReason } = payload;
+console.log('application update',payload)
+  const data: ReviewAdmisson = {
+    status,
+    ...(status === "REJECTED" && rejectionReason?.trim()
+      ? { rejectionReason: rejectionReason.trim() }
+      : { rejectionReason: "" }),
+  };
+console.log('data update admisson ',data)
+  return apiFetch(`/admin/admissions/${applicationId}/status`, {
+    method: "PATCH",
+    body: data,
   });
 }

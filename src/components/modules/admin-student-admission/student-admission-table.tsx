@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Search, Eye } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -23,16 +23,23 @@ import {
 
 import SelectResultDocuments from "../../modal/SelectResultDocuments";
 import { usegetStatusBadge } from "../../../hooks/badgeStatus.hook";
-import { useAdminGetAdmission } from '../../../hooks/admission-application.hook';
+import { useAdminGetAdmission } from "../../../hooks/admission-application.hook";
+import StudentReview from "./admission-Review.sheet";
+import { useDebaunce } from '../../../hooks/debaunce.hook';
 
+const admissionStatuses = ["PENDING", "ACCEPTED", "REJECTED", "PAID", "All"] as const;
+type AdmissionStatus = (typeof admissionStatuses)[number];
 
 const StudentAdmissionTable = () => {
-
-    const {data}=useAdminGetAdmission()
-    const applications=data?.data||[]
-    console.log('data admision',data)
+  const [searchTram,setSearchTram]=useState('All')
+  const [status,setStatus]=useState<AdmissionStatus | undefined>(undefined)
+  const search=useDebaunce(searchTram,300)
+  const { data } = useAdminGetAdmission({search,status});
+  console.log('status',status,'seach',search)
+  const applications = data?.data || [];
+  console.log("data admision", data);
   return (
-    <div >
+    <div>
       {/* Table */}
       <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
         <div className="flex flex-col gap-4 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -46,22 +53,27 @@ const StudentAdmissionTable = () => {
           <div className="flex flex-col gap-3 sm:flex-row">
             <div className="relative sm:w-72">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <Input placeholder="Search student..." className="pl-9" />
+              <Input
+               placeholder="Search student..." className="pl-9" 
+               onChange={(e)=> setSearchTram(e.target.value)}
+               />
             </div>
 
             <Select
-              
-              //  onValueChange={setStatus}
+              onValueChange={(value: string | null) =>
+                setStatus(admissionStatuses.find((option) => option === value))
+              }
             >
               <SelectTrigger className="w-full sm:w-44">
                 <SelectValue placeholder="Filter status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ALL">All statuses</SelectItem>
-                <SelectItem value="PENDING">Pending</SelectItem>
-                <SelectItem value="UNDER_REVIEW">Under Review</SelectItem>
-                <SelectItem value="APPROVED">Approved</SelectItem>
-                <SelectItem value="REJECTED">Rejected</SelectItem>
+                <SelectItem value="All">All statuses</SelectItem>
+                {admissionStatuses.map((value) => (
+                    <SelectItem key={value} value={value}>
+                      {value}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -82,7 +94,7 @@ const StudentAdmissionTable = () => {
             </TableHeader>
 
             <TableBody>
-              {applications.map((application:any) => (
+              {applications.map((application: any) => (
                 <TableRow
                   key={application.id}
                   className="transition-colors hover:bg-slate-50/80"
@@ -93,7 +105,7 @@ const StudentAdmissionTable = () => {
                         <AvatarFallback className="bg-orange-100 font-semibold text-orange-700">
                           {application.user.name
                             .split(" ")
-                            .map((part:any) => part[0])
+                            .map((part: any) => part[0])
                             .slice(0, 2)
                             .join("")}
                         </AvatarFallback>
@@ -137,15 +149,7 @@ const StudentAdmissionTable = () => {
                   <TableCell>{usegetStatusBadge(application.status)}</TableCell>
 
                   <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                      onClick={() => alert(`Application: ${application.id}`)}
-                    >
-                      <Eye className="h-4 w-4" />
-                      Review
-                    </Button>
+                    <StudentReview reviewData={application} />
                   </TableCell>
                 </TableRow>
               ))}
