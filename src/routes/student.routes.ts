@@ -82,7 +82,7 @@ export const studentroutes = [
       {
         name: "Payments",
         title: "Payments",
-        url: "/dashboard/student/payments",
+        url: "/student/my-payments",
         icon: CreditCard,
       },
       {

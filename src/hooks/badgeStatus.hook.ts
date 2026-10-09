@@ -61,6 +61,20 @@ export const usegetStatusBadge = (status: string) => {
         "border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-900 dark:bg-purple-950/30 dark:text-purple-400",
       icon: CreditCard,
     },
+
+    SUCCESS: {
+      label: "Success",
+      className:
+        "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-400",
+      icon: CheckCircle2,
+    },
+
+    FAILED: {
+      label: "Failed",
+      className:
+        "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-950/30 dark:text-rose-400",
+      icon: XCircle,
+    },
   };
 
   const config = statusConfig[status] ?? {
@@ -72,11 +86,13 @@ export const usegetStatusBadge = (status: string) => {
 
   return createElement(Badge, {
     variant: "outline",
-    className: `inline-flex items-center gap-1.5 ${config.className}`,
+    className: `inline-flex w-fit items-center gap-1.5 ${config.className}`,
     children: createElement(
       "span",
       { className: "inline-flex items-center gap-1.5" },
-      createElement(config.icon, { className: "h-3.5 w-3.5" }),
+      createElement(config.icon, {
+        className: "h-3.5 w-3.5",
+      }),
       config.label,
     ),
   });

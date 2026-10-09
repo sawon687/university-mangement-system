@@ -4,7 +4,7 @@ import StudentApplicaton from '../../../../components/modules/admission/Student-
 const page = () => {
   return (
     <div>
-      <h1>My Admission Aplication</h1>
+      
     <StudentApplicaton/>
     </div>
   )
