@@ -1,5 +1,5 @@
 import { Mutation, useMutation, useQuery } from '@tanstack/react-query';
-import { admincreateCourse, getCourseAsssignmentData, getInstrutorCourse } from '../api/courses.api';
+import { admincreateCourse, getCourseAsssignmentData, getInstrutorCourse, studentCourseMarks } from '../api/courses.api';
 import { QueryParms } from '../type/courses.type';
 import { useParams } from './params.hook';
 
@@ -26,3 +26,11 @@ export function useGetInstrutorCourse(){
      queryFn:getInstrutorCourse
    })
 }
+
+export function useCreateCourseMarks(){
+   
+    return useMutation({
+        mutationFn:studentCourseMarks
+    })
+}
+

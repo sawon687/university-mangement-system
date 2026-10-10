@@ -1,6 +1,7 @@
 import { useParams } from "../hooks/params.hook";
 import apiFetch from "../lib/api-ofetch";
 import { ICourse, QueryParms } from "../type/courses.type";
+import { CourseMarks } from '../type/exam.type';
 
 export function getCourseAsssignmentData(params: QueryParms) {
   const searchParams = useParams(params);
@@ -31,5 +32,12 @@ export function adminCourseAssign(paylaod: {
 export function getInstrutorCourse() {
   return apiFetch(`/teacher/course/my-assigned`, {
     method: "GET",
+  });
+}
+
+export function studentCourseMarks(payload: CourseMarks) {
+  return apiFetch(`/teacher/corse-marks/${payload.courseId}`, {
+    method: "POST",
+    body: payload,
   });
 }

@@ -1,17 +1,17 @@
-
 "use client";
 
 import React from "react";
 import {
   BookOpen,
   Users,
-  Eye,
-  ArrowUpRight,
   GraduationCap,
   Loader2,
 } from "lucide-react";
 
-import { useGetInstrutorCourse } from "../../../../hooks/courses.hook";
+import {
+  useCreateCourseMarks,
+  useGetInstrutorCourse,
+} from "../../../../hooks/courses.hook";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,14 +30,44 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import CreateExamModal from '../../../modal/Exam-modal';
-
-
+import CreateExamModal from "../../../modal/Exam-modal";
+import CourseMarksSheet from "./CourseMarksSheet";
+import { toast } from "../../../ui/toast";
+import { CourseMarks } from "../../../../type/exam.type";
 
 const CourseTable = () => {
   const { data, isLoading, isError } = useGetInstrutorCourse();
+  const { mutate: createMarks, isPending } = useCreateCourseMarks();
 
   const courses = data?.data ?? [];
+
+  const handleCourseMarksSubmit = (payload: CourseMarks,onSuccess:()=> void) => {
+    createMarks(payload, {
+      onSuccess: (res) => {
+        toast.add({
+          title: "Course Marks Success",
+          description: res.message,
+          type: "success",
+        });
+        onSuccess(); 
+      },
+
+      onError: (error: any) => {
+        console.log("Errors:", error.data);
+
+        toast.add({
+          title: "Course Marks Failed",
+          description:
+            error.data?.message ||
+            error.errors?.message ||
+            "Something went wrong",
+          type: "Error",
+        });
+      },
+    });
+
+    console.log("Course marks payload:", payload);
+  };
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
@@ -104,7 +134,9 @@ const CourseTable = () => {
       {/* Course Table */}
       <Card className="overflow-hidden rounded-xl border shadow-sm">
         <CardHeader className="gap-2 border-b bg-muted/20">
-          <CardTitle className="text-lg">Assigned Courses</CardTitle>
+          <CardTitle className="text-lg">
+            Assigned Courses
+          </CardTitle>
           <CardDescription>
             Create exams and manage your assigned courses.
           </CardDescription>
@@ -128,7 +160,9 @@ const CourseTable = () => {
                 <BookOpen className="size-7 text-muted-foreground" />
               </div>
 
-              <h3 className="font-semibold">No courses assigned</h3>
+              <h3 className="font-semibold">
+                No courses assigned
+              </h3>
 
               <p className="text-sm text-muted-foreground">
                 Your assigned courses will appear here.
@@ -142,10 +176,14 @@ const CourseTable = () => {
                     <TableHead className="min-w-56 pl-6">
                       Course Information
                     </TableHead>
+
                     <TableHead>Course Code</TableHead>
+
                     <TableHead>Students</TableHead>
+
                     <TableHead>Status</TableHead>
-                    <TableHead className="min-w-64 pr-6 text-right">
+
+                    <TableHead className="min-w-40 pr-6 text-right">
                       Actions
                     </TableHead>
                   </TableRow>
@@ -176,6 +214,7 @@ const CourseTable = () => {
                               <p className="font-semibold">
                                 {course?.title ?? "Untitled Course"}
                               </p>
+
                               <p className="mt-1 text-xs text-muted-foreground">
                                 Assigned course
                               </p>
@@ -193,7 +232,7 @@ const CourseTable = () => {
                           </Badge>
                         </TableCell>
 
-                        {/* Students */}
+                        {/* Students Count */}
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <Users className="size-4 text-muted-foreground" />
@@ -213,7 +252,7 @@ const CourseTable = () => {
                         {/* Actions */}
                         <TableCell className="pr-6">
                           <div className="flex flex-wrap justify-end gap-2">
-                            {/* Create Exam Modal */}
+                            {/* Create Exam */}
                             <CreateExamModal
                               courseId={item.courseId}
                               semesterId={item.semesterId}
@@ -223,40 +262,22 @@ const CourseTable = () => {
                               courseCode={course?.code}
                             />
 
-                            {/* Students Button */}
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="gap-2"
-                              onClick={() => {
-                                console.log(
-                                  "View students:",
-                                  item.id,
-                                  students,
-                                );
-                              }}
-                            >
-                              <Users className="size-4" />
-                              <span className="hidden lg:inline">
-                                Students
-                              </span>
-                            </Button>
-
-                            {/* Details Button */}
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="gap-2"
-                              onClick={() => {
-                                console.log("View course:", item.id);
-                              }}
-                            >
-                              <Eye className="size-4" />
-                              <span className="hidden lg:inline">
-                                Details
-                              </span>
-                              <ArrowUpRight className="size-3.5" />
-                            </Button>
+                            {/* Course Marks */}
+                            <CourseMarksSheet
+                              courseId={item.courseId}
+                              semesterId={item.semesterId}
+                              courseTitle={
+                                course?.title ?? "Untitled Course"
+                              }
+                              courseCode={course?.code}
+                              students={students.map((student: any) => ({
+                                id: student.id,
+                                name: student.name ?? "Student",
+                                email: student.email,
+                              }))}
+                              onSubmit={handleCourseMarksSubmit}
+                              isPending={isPending}
+                            />
                           </div>
                         </TableCell>
                       </TableRow>

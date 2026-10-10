@@ -15,3 +15,12 @@ export interface IExam {
   courseId:string
 }
 
+export interface CourseMarks{
+   studentId: string;
+    courseId: string;
+    semesterId: string;
+    attendanceMarks: number;
+    assignmentMarks: number;
+    midMarks: number;
+    finalExamMarks: number;
+}

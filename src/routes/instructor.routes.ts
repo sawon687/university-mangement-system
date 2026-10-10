@@ -32,7 +32,7 @@ export const instructorRoutes = [
         icon: BookOpen,
       },
       {
-        title: "Exams",
+        title: "My Exams",
         url: `${prefix}/exams`,
         icon: ClipboardList,
       },
