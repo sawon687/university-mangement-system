@@ -38,9 +38,9 @@ export const studentroutes = [
         icon: UserRound,
       },
       {
-        name: "Running Semester",
-        title: "Running Semester",
-        url: "/dashboard/student/semester",
+        name: "My Semester",
+        title: "My Semester",
+          url: "/student/my-semester",
         icon: CalendarDays,
       },
       {

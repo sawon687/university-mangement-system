@@ -10,9 +10,26 @@ export function getCourseAsssignmentData(params: QueryParms) {
   });
 }
 
-export function admincreateCourse(paylaod:ICourse) {
+export function admincreateCourse(paylaod: ICourse) {
   return apiFetch("/admin/create-course", {
     method: "POST",
-    body:paylaod
+    body: paylaod,
+  });
+}
+
+export function adminCourseAssign(paylaod: {
+  courseId: string;
+  instructorId: string;
+  semesterId: string;
+}) {
+  return apiFetch(`/admin/course/${paylaod.courseId}/assign`, {
+    method: "POST",
+    body: paylaod,
+  });
+}
+
+export function getInstrutorCourse() {
+  return apiFetch(`/teacher/course/my-assigned`, {
+    method: "GET",
   });
 }

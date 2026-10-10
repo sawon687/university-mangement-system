@@ -136,6 +136,8 @@ const { data: result, isLoading } = useGetAssignmentData(queryParams);
   const courses = result?.data?.course || [];
   const instructor=result?.data?.instructor || []
   console.log("result", courses);
+  console.log('instrutor',instructor)
+  console.log('instrour sawon',result)
   const { data } = useGetDepartment("");
   console.log("selectDept", selectDep);
   const departments: IDepartment[] = (data?.data ?? []) as IDepartment[];

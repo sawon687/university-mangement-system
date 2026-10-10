@@ -57,7 +57,7 @@ export interface IUpdatePassword{
 // }
 
 export interface IStudentProfile{
-
+   id?:string
     phone:string,
     dateOfBirth:string,
     gender:string,
@@ -70,6 +70,7 @@ export interface IStudentProfile{
 }
 
 export interface IUser {
+  id?:string;
   name: string;
   email: string;
   role: (typeof Role)[keyof typeof Role];
@@ -78,7 +79,9 @@ export interface IUser {
   userStatus:string
   emailVerified:boolean
   studentProfile?:IStudentProfile
-  instructor?:Instructor
+  instructorProfile?:instructorProfile
+  createdAt?:string
+  updateAt?:string
 }
 
 export const Role = {
@@ -87,14 +90,17 @@ export const Role = {
   ADMIN: "ADMIN",
 } as const;
 
-export interface Instructor {
+export interface instructorProfile {
+  id?:string;
   phone: string;
   gender: string;
   dateOfBirth: Date;
   address: string;
   designation: string;
   department: {
+    id:string
     name: string;
+    code:string
   };
   bio: string;
   specialization: string;

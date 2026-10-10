@@ -31,7 +31,7 @@ export function LoginForm() {
   const form = useForm({
     defaultValues: {
       email: "ni2474758@gmail.com",
-      password: "sawon@123",
+      password: "dd&Ho^fKlKaI",
     },
     validators: {
       onSubmit: loginSchema,

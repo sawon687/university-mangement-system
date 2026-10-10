@@ -23,10 +23,12 @@ import { SidbarItems } from "../../type/sidebar.type";
 import { usePathname } from "next/navigation";
 import { useGetMe } from '../../hooks/auth.hook';
 import { IUser } from '../../type';
+import { instructorRoutes } from '../../routes/instructor.routes';
 // This is sample data.
 const sidebarRoutes = {
   ADMIN: adminRoutes,
   STUDENT: studentroutes,
+    INSTRUCTOR:instructorRoutes
 };
 export function DashboardSidebar({
   ...props
@@ -37,8 +39,10 @@ export function DashboardSidebar({
   const role = user?.role;                                                                                                                                                                                                                                                                                                                                                            
   const pathname = usePathname();
   const routes: SidbarItems =
-    role === "ADMIN" || role === "STUDENT" ? sidebarRoutes[role] : [];
+    role === "ADMIN" || role === "STUDENT"|| role==='INSTRUCTOR' ? sidebarRoutes[role] : [];
   console.log("state", state);
+  console.log('routes',routes);
+    console.log('routes role',sidebarRoutes[role!]);
   return (
     <Sidebar  collapsible="icon" {...props}>
       <SidebarHeader>

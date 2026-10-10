@@ -1,3 +1,4 @@
+import { IDepartment } from './departments.type';
 
 export interface QueryParms {
   limit?: number;
@@ -19,8 +20,10 @@ export interface ICourse {
   code: string;
   description: string;
   departmentId: string;
+  department:IDepartment
   programId: string;
   credit: number;
   semesterNumber: number;
 }
+
 

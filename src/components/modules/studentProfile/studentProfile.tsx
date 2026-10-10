@@ -12,16 +12,15 @@ import {
   Hash,
   Venus,
   ShieldCheck,
-  Pencil,
   Clock,
   Camera,
 } from "lucide-react";
 
 import { Input } from "../../ui/input";
 import { FieldError, FieldLabel } from "../../ui/field";
-import { getMe } from '../../../api';
+
 import { useGetMe } from '../../../hooks/auth.hook';
-import { IDepartment, IStudentProfile, IUser } from '../../../type';
+import {IUser } from '../../../type';
 import StudentProfileEditModal from '../../modal/studentProfile-Edit.modal';
 
 const StudentProfile = () => {
@@ -140,7 +139,10 @@ console.log('studnet',student)
                 </div>
               </div>
             </div>
-           <StudentProfileEditModal editData={student?.studentProfile}/>
+            {
+              student.studentProfile &&<StudentProfileEditModal editData={student?.studentProfile}/>
+            }
+        
           </div>
         </div>
       </div>
@@ -224,7 +226,7 @@ console.log('studnet',student)
             <AcademicItem
               icon={<Hash size={18} />}
               label="Profile ID"
-              value={student.studentProfile?.id ??''}
+              value={student.studentProfile.id ??''}
             />
 
             <AcademicItem

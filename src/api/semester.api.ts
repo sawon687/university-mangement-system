@@ -14,9 +14,15 @@ export function getAllSemester() {
   });
 }
 
+export function getStudentSemester() {
+  console.log('sawon semser nirob')
+  return apiFetch(`/users/my-semester`, {
+    method: "GET",
+  });
+}
 export function updateSemester(data: IUpdateSemester & { id: string }) {
   console.log("data sawon", data);
-  const id=data.id
+  const id = data.id;
   const payload = {
     startDate: data.startDate,
     endDate: data.endDate,
