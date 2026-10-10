@@ -10,9 +10,18 @@ import {
   RefreshCw,
   AlertCircle,
 } from "lucide-react";
-import { useGetAdminStats } from '../../../hooks/adminDashboar.hook';
 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
+import { useGetAdminStats } from "../../../hooks/adminDashboar.hook";
 
 const formatMoney = (amount: number) =>
   new Intl.NumberFormat("en-BD", {
@@ -22,14 +31,26 @@ const formatMoney = (amount: number) =>
   }).format(amount);
 
 export default function AdminDashboardPage() {
-  const { data:result, isLoading, isError, refetch, isFetching } =
-    useGetAdminStats();
-const data=result?.data ??null
+  const {
+    data: result,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useGetAdminStats();
+
+  const data = result?.data ?? null;
+
   const totalUsers = data?.userCount ?? 0;
   const totalStudents = data?.studentCoutn ?? 0;
   const totalInstructors = data?.instructorCount ?? 0;
   const totalMoney = data?.TotalMoney?._sum?.amount ?? 0;
-console.log('data ',data)
+
+  const otherUsers = Math.max(
+    totalUsers - totalStudents - totalInstructors,
+    0
+  );
+
   const stats = [
     {
       title: "Total Users",
@@ -66,6 +87,21 @@ console.log('data ',data)
       iconBg: "bg-violet-50",
       iconColor: "text-violet-600",
       accent: "bg-violet-500",
+    },
+  ];
+
+  const chartData = [
+    {
+      name: "Students",
+      total: totalStudents,
+    },
+    {
+      name: "Instructors",
+      total: totalInstructors,
+    },
+    {
+      name: "Other Users",
+      total: otherUsers,
     },
   ];
 
@@ -106,12 +142,16 @@ console.log('data ',data)
         {/* Error */}
         {isError && (
           <div className="flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center">
-            <AlertCircle className="shrink-0 text-red-600" size={21} />
+            <AlertCircle
+              className="shrink-0 text-red-600"
+              size={21}
+            />
 
             <div className="flex-1">
               <p className="font-semibold text-red-800">
                 Unable to load dashboard statistics
               </p>
+
               <p className="mt-1 text-sm text-red-700">
                 Please check your connection and try again.
               </p>
@@ -120,19 +160,21 @@ console.log('data ',data)
             <button
               type="button"
               onClick={() => refetch()}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+              disabled={isFetching}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
             >
-              Try again
+              {isFetching ? "Retrying..." : "Try again"}
             </button>
           </div>
         )}
 
-        {/* Stats */}
+        {/* Statistics Cards */}
         <section>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-bold text-slate-900">
               Key Statistics
             </h2>
+
             <span className="text-xs font-medium text-slate-400">
               Live overview
             </span>
@@ -177,6 +219,7 @@ console.log('data ',data)
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-600">
                       <ArrowUpRight size={14} />
                     </span>
+
                     <p className="text-xs text-slate-500">
                       {stat.description}
                     </p>
@@ -187,46 +230,64 @@ console.log('data ',data)
           </div>
         </section>
 
-        {/* Summary */}
+        {/* University Summary */}
         <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
           <div className="border-b border-slate-100 px-5 py-5 sm:px-6">
-            <h2 className="font-bold text-slate-900">University Summary</h2>
+            <h2 className="font-bold text-slate-900">
+              University Summary
+            </h2>
+
             <p className="mt-1 text-sm text-slate-500">
               Current user distribution and collected revenue.
             </p>
           </div>
 
           <div className="grid grid-cols-1 divide-y divide-slate-100 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            {/* Total Users */}
             <div className="p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2 text-sm text-slate-500">
                 <Users size={17} />
                 User Accounts
               </div>
+
               <p className="text-2xl font-bold text-slate-900">
                 {isLoading ? "—" : totalUsers.toLocaleString()}
               </p>
+
               <p className="mt-2 text-xs text-slate-400">
                 Total accounts across all roles
               </p>
             </div>
 
+            {/* Student Share */}
             <div className="p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2 text-sm text-slate-500">
                 <GraduationCap size={17} />
                 Student Share
               </div>
+
               <p className="text-2xl font-bold text-slate-900">
                 {isLoading
                   ? "—"
-                  : `${totalUsers > 0 ? Math.round((totalStudents / totalUsers) * 100) : 0}%`}
+                  : `${
+                      totalUsers > 0
+                        ? Math.round(
+                            (totalStudents / totalUsers) * 100
+                          )
+                        : 0
+                    }%`}
               </p>
+
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
                 <div
                   className="h-full rounded-full bg-orange-500 transition-all duration-500"
                   style={{
                     width: `${
                       totalUsers > 0
-                        ? Math.min((totalStudents / totalUsers) * 100, 100)
+                        ? Math.min(
+                            (totalStudents / totalUsers) * 100,
+                            100
+                          )
                         : 0
                     }%`,
                   }}
@@ -234,14 +295,17 @@ console.log('data ',data)
               </div>
             </div>
 
+            {/* Revenue */}
             <div className="p-5 sm:p-6">
               <div className="mb-3 flex items-center gap-2 text-sm text-slate-500">
                 <Wallet size={17} />
                 Collected Revenue
               </div>
+
               <p className="break-words text-2xl font-bold text-slate-900">
                 {isLoading ? "—" : formatMoney(totalMoney)}
               </p>
+
               <p className="mt-2 text-xs text-slate-400">
                 Based on payments marked as paid
               </p>
@@ -249,6 +313,90 @@ console.log('data ',data)
           </div>
         </section>
 
+        {/* User Distribution Chart */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <div className="mb-6">
+            <h2 className="text-lg font-bold text-slate-900">
+              User Distribution
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Overview of students, instructors, and other user accounts.
+            </p>
+          </div>
+
+          {isLoading ? (
+            <div className="h-[320px] animate-pulse rounded-xl bg-slate-100" />
+          ) : isError ? (
+            <div className="flex h-[320px] items-center justify-center text-sm text-slate-500">
+              Unable to load chart data.
+            </div>
+          ) : (
+            <div className="h-[320px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={chartData}
+                  margin={{
+                    top: 10,
+                    right: 12,
+                    left: -15,
+                    bottom: 5,
+                  }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="#e2e8f0"
+                  />
+
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{
+                      fill: "#64748b",
+                      fontSize: 12,
+                    }}
+                  />
+
+                  <YAxis
+                    allowDecimals={false}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{
+                      fill: "#64748b",
+                      fontSize: 12,
+                    }}
+                  />
+
+                  <Tooltip
+                    cursor={{ fill: "#f8fafc" }}
+                    contentStyle={{
+                      borderRadius: "12px",
+                      border: "1px solid #e2e8f0",
+                      boxShadow:
+                        "0 4px 12px rgba(0,0,0,0.05)",
+                    }}
+                    formatter={(value) => [
+                      Number(value ?? 0).toLocaleString(),
+                      "Users",
+                    ]}
+                  />
+
+                  <Bar
+                    dataKey="total"
+                    name="Users"
+                    fill="#f97316"
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={64}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </section>
+
+        {/* Footer */}
         <p className="text-center text-xs text-slate-400">
           UniSphere · University Management System
         </p>
@@ -256,4 +404,3 @@ console.log('data ',data)
     </main>
   );
 }
-

@@ -4,7 +4,7 @@ import StudentGPAResultTable from '../../../../components/modules/studen-result/
 const page = () => {
   return (
     <div>
-<StudentGPAResultTable></StudentGPAResultTable>
+{/* <StudentGPAResultTable></StudentGPAResultTable> */}
         
     </div>
   )
