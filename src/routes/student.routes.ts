@@ -70,7 +70,7 @@ export const studentroutes = [
       {
         name: "Results",
         title: "Results",
-        url: "/dashboard/student/results",
+        url: "/student/my-result",
         icon: Award,
       },
       {

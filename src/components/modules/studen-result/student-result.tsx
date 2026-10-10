@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
@@ -11,6 +10,7 @@ import {
   TrendingUp,
   FileText,
   Loader2,
+  Info,
 } from "lucide-react";
 
 import {
@@ -109,12 +109,9 @@ export default function StudentGPAResultTable({
   const filteredResults = useMemo(() => {
     return gpaResults.filter((result) => {
       const matchesSemester =
-        semesterFilter === "ALL" ||
-        result.semesterId === semesterFilter;
+        semesterFilter === "ALL" || result.semesterId === semesterFilter;
 
-      const semester = semesters.find(
-        (item) => item.id === result.semesterId,
-      );
+      const semester = semesters.find((item) => item.id === result.semesterId);
 
       const semesterName = semester
         ? `${semester.name} ${semester.year ?? ""}`
@@ -140,9 +137,7 @@ export default function StudentGPAResultTable({
 
   // Weighted GPA across the displayed semesters
   const cumulativeGPA =
-    totalCredits > 0
-      ? Number((totalPoints / totalCredits).toFixed(2))
-      : 0;
+    totalCredits > 0 ? Number((totalPoints / totalCredits).toFixed(2)) : 0;
 
   return (
     <div className="min-h-screen bg-slate-50/70 px-4 py-6 dark:bg-slate-950 sm:px-6 lg:px-8 lg:py-10">
@@ -180,9 +175,7 @@ export default function StudentGPAResultTable({
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-muted-foreground">
-                  {semesterFilter === "ALL"
-                    ? "Cumulative GPA"
-                    : "Semester GPA"}
+                  {semesterFilter === "ALL" ? "Cumulative GPA" : "Semester GPA"}
                 </p>
 
                 <div className="rounded-xl bg-orange-100 p-2.5 text-orange-600 dark:bg-orange-950">
@@ -287,7 +280,7 @@ export default function StudentGPAResultTable({
 
             <Select
               value={semesterFilter}
-              onValueChange={setSemesterFilter}
+              onValueChange={(value) => setSemesterFilter(value ?? "ALL")}
             >
               <SelectTrigger className="h-11 rounded-xl">
                 <SelectValue placeholder="Filter by semester" />
@@ -324,8 +317,8 @@ export default function StudentGPAResultTable({
                 <h3 className="font-semibold">No GPA results found</h3>
 
                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                  No GPA results match your selected semester or search.
-                  Results will appear here after they are generated.
+                  No GPA results match your selected semester or search. Results
+                  will appear here after they are generated.
                 </p>
               </div>
             ) : (
@@ -449,9 +442,7 @@ export default function StudentGPAResultTable({
                   {filteredResults.length === 1 ? "result" : "results"}
                 </span>
 
-                <span>
-                  GPA = Total Points ÷ Total Credits
-                </span>
+                <span>GPA = Total Points ÷ Total Credits</span>
               </div>
             )}
           </CardContent>
@@ -468,10 +459,9 @@ export default function StudentGPAResultTable({
             </p>
 
             <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
-              Semester GPA is calculated by dividing the total of
-              (course grade point × course credit) by the total credits.
-              The cumulative GPA shown for all semesters uses the same
-              credit-weighted calculation.
+              Semester GPA is calculated by dividing the total of (course grade
+              point × course credit) by the total credits. The cumulative GPA
+              shown for all semesters uses the same credit-weighted calculation.
             </p>
           </div>
         </div>

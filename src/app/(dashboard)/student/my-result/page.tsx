@@ -1,8 +1,12 @@
 import React from 'react'
+import StudentGPAResultTable from '../../../../components/modules/studen-result/student-result'
 
 const page = () => {
   return (
-    <div>page</div>
+    <div>
+<StudentGPAResultTable></StudentGPAResultTable>
+        
+    </div>
   )
 }
 

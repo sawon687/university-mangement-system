@@ -226,7 +226,7 @@ console.log('studnet',student)
             <AcademicItem
               icon={<Hash size={18} />}
               label="Profile ID"
-              value={student.studentProfile.id ??''}
+              value={student?.studentProfile?.id ?? ''}
             />
 
             <AcademicItem
@@ -238,7 +238,7 @@ console.log('studnet',student)
             <AcademicItem
               icon={<GraduationCap size={18} />}
               label="Department Name"
-              value={student.studentProfile?.department?.name ??''}
+              value={student?.studentProfile?.department?.name ?? ''}
             />
 
             <AcademicItem

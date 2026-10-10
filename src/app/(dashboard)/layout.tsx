@@ -1,8 +1,10 @@
 import React, { ReactNode } from 'react'
+import AuthGuard from '../../components/auth/auth-gurd'
+
 
 const layout = ({children}:{children:ReactNode}) => {
   return (
-    <div>{children}</div>
+   <AuthGuard>{children}</AuthGuard>
   )
 }
 

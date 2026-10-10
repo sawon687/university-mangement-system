@@ -41,7 +41,10 @@ const CourseTable = () => {
 
   const courses = data?.data ?? [];
 
-  const handleCourseMarksSubmit = (payload: CourseMarks,onSuccess:()=> void) => {
+  const handleCourseMarksSubmit = (
+    payload: CourseMarks,
+    onSuccess?: () => void,
+  ) => {
     createMarks(payload, {
       onSuccess: (res) => {
         toast.add({
@@ -49,7 +52,7 @@ const CourseTable = () => {
           description: res.message,
           type: "success",
         });
-        onSuccess(); 
+        onSuccess?.();
       },
 
       onError: (error: any) => {

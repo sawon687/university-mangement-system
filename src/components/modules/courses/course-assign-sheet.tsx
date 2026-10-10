@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -62,22 +61,18 @@ interface SemesterItem {
   year?: number | string;
 }
 
-export default function CoursesSheetSide({
-  course,
-  instructors,
-}: Props) {
-  const [selectedInstructorId, setSelectedInstructorId] =
-    useState<string | null>(null);
-const [open,setOpen]=useState(false)
-  const [selectedSemesterId, setSelectedSemesterId] =
-    useState<string>("");
+export default function CoursesSheetSide({ course, instructors }: Props) {
+  const [selectedInstructorId, setSelectedInstructorId] = useState<
+    string | null
+  >(null);
+  const [open, setOpen] = useState(false);
+  const [selectedSemesterId, setSelectedSemesterId] = useState<string>("");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const { mutate: courseAssign, isPending } = useCourseAssign();
   const { data: semester } = useGetSemester();
-
 
   const semesters: SemesterItem[] = Array.isArray(semester)
     ? semester
@@ -116,10 +111,7 @@ const [open,setOpen]=useState(false)
 
   const getSemesterLabel = (item: SemesterItem) => {
     const name =
-      item.name ??
-      item.semesterName ??
-      item.semesterType ??
-      "Semester";
+      item.name ?? item.semesterName ?? item.semesterType ?? "Semester";
 
     return item.year ? `${name} - ${item.year}` : name;
   };
@@ -156,7 +148,7 @@ const [open,setOpen]=useState(false)
           description: res.message || "Course assigned successfully.",
           type: "success",
         });
-        setOpen(false)
+        setOpen(false);
       },
 
       onError: (error: any) => {
@@ -213,17 +205,13 @@ const [open,setOpen]=useState(false)
                     </h3>
 
                     <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <Badge variant="secondary">
-                        {course.code}
-                      </Badge>
+                      <Badge variant="secondary">{course.code}</Badge>
 
                       <span className="text-xs text-muted-foreground">
                         {course.credit} Credits
                       </span>
 
-                      <span className="text-xs text-muted-foreground">
-                        •
-                      </span>
+                      <span className="text-xs text-muted-foreground">•</span>
 
                       <span className="text-xs text-muted-foreground">
                         Semester {course.semesterNumber}
@@ -232,9 +220,7 @@ const [open,setOpen]=useState(false)
                   </div>
 
                   <Badge variant="outline">
-                    {selectedInstructor
-                      ? "Instructor Selected"
-                      : "Unassigned"}
+                    {selectedInstructor ? "Instructor Selected" : "Unassigned"}
                   </Badge>
                 </div>
               </div>
@@ -252,9 +238,7 @@ const [open,setOpen]=useState(false)
 
               <Select
                 value={selectedSemesterId}
-                onValueChange={(value) =>
-                  setSelectedSemesterId(value ?? "")
-                }
+                onValueChange={(value) => setSelectedSemesterId(value ?? "")}
               >
                 <span></span>
                 <SelectTrigger className="h-10 w-full">
@@ -264,10 +248,7 @@ const [open,setOpen]=useState(false)
                 <SelectContent>
                   {semesters.length > 0 ? (
                     semesters.map((item) => (
-                      <SelectItem
-                        key={item.id}
-                        value={item.id}
-                      >
+                      <SelectItem key={item.id} value={item.id}>
                         {getSemesterLabel(item)}
                       </SelectItem>
                     ))
@@ -313,9 +294,7 @@ const [open,setOpen]=useState(false)
             <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto px-4 py-4">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <div>
-                  <p className="text-sm font-semibold">
-                    Select Instructor
-                  </p>
+                  <p className="text-sm font-semibold">Select Instructor</p>
 
                   <p className="text-xs text-muted-foreground">
                     {filteredInstructors.length} instructors available
@@ -330,16 +309,13 @@ const [open,setOpen]=useState(false)
               <div className="space-y-2">
                 {currentInstructors.length > 0 ? (
                   currentInstructors.map((instructor) => {
-                    const isSelected =
-                      selectedInstructorId === instructor.id;
+                    const isSelected = selectedInstructorId === instructor.id;
 
                     return (
                       <button
                         key={instructor.id}
                         type="button"
-                        onClick={() =>
-                          setSelectedInstructorId(instructor.id!)
-                        }
+                        onClick={() => setSelectedInstructorId(instructor.id!)}
                         className={`group w-full rounded-xl border p-3 text-left transition-colors ${
                           isSelected
                             ? "border-primary bg-orange-50/50 dark:bg-orange-950/20"
@@ -385,7 +361,7 @@ const [open,setOpen]=useState(false)
                                 <UserRound className="size-3.5 shrink-0" />
 
                                 <span className="truncate">
-                                  {instructor.instructor?.teacherCode ||
+                                  {instructor.instructorProfile?.teacherCode ||
                                     "No teacher code"}
                                 </span>
                               </div>
@@ -394,7 +370,7 @@ const [open,setOpen]=useState(false)
                                 <BadgeCheck className="size-3.5 shrink-0" />
 
                                 <span className="truncate">
-                                  {instructor.instructor?.designation ||
+                                  {instructor.instructorProfile?.designation ??
                                     "No designation"}
                                 </span>
                               </div>
@@ -404,8 +380,8 @@ const [open,setOpen]=useState(false)
                               <Building2 className="size-3.5 shrink-0" />
 
                               <span className="truncate">
-                                {instructor.instructor?.department?.name ||
-                                  "No department"}
+                                {instructor.instructorProfile?.department
+                                  ?.name || "No department"}
                               </span>
                             </div>
                           </div>
@@ -440,9 +416,7 @@ const [open,setOpen]=useState(false)
                       size="sm"
                       disabled={currentPage === 1}
                       onClick={() =>
-                        setCurrentPage((prev) =>
-                          Math.max(prev - 1, 1),
-                        )
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
                       }
                     >
                       <ChevronLeft className="size-4" />
@@ -455,9 +429,7 @@ const [open,setOpen]=useState(false)
                       size="sm"
                       disabled={currentPage === totalPages}
                       onClick={() =>
-                        setCurrentPage((prev) =>
-                          Math.min(prev + 1, totalPages),
-                        )
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                       }
                     >
                       Next
@@ -482,9 +454,7 @@ const [open,setOpen]=useState(false)
             <Button
               type="button"
               disabled={
-                !selectedInstructorId ||
-                !selectedSemesterId ||
-                isPending
+                !selectedInstructorId || !selectedSemesterId || isPending
               }
               onClick={handleAssign}
             >
@@ -503,4 +473,3 @@ const [open,setOpen]=useState(false)
     </div>
   );
 }
-

@@ -1,9 +1,11 @@
 import React, { ReactNode } from 'react'
 import DashboardShell from '../../../components/dashboard/dashbaord-shell'
+import RoleGuard from '../../../components/auth/role-gurd'
+
 
 const layout = ({children}:{children:ReactNode}) => {
   return (
-    <DashboardShell>{children}</DashboardShell>
+    <RoleGuard roles={['STUDENT']}><DashboardShell>{children}</DashboardShell></RoleGuard>
   )
 }
 
