@@ -10,9 +10,9 @@ import { QueryParms } from "../type/courses.type";
 //   });
 // }
 
-export function createInstructor(paylaod) {
+export function createInstructor(payload: Record<string, unknown>) {
   return apiFetch("/admin/create-teacher", {
     method: "POST",
-    body: paylaod,
+    body: payload,
   });
 }
