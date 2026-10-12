@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SlidersHorizontal } from "lucide-react";
+import { useGetDepartment } from '../../../hooks/department.hook';
+import { IDepartment } from '../../../type';
 
 interface TabItem {
   value: string;
@@ -11,38 +13,30 @@ interface TabItem {
 }
 
 const statusTabs: TabItem[] = [
-  { value: "all", label: "All Status" },
-  { value: "active", label: "Active" },
-  { value: "inactive", label: "Inactive" },
+  { value: "All", label: "All" },
+  { value: "ACTIVE", label: "Active" },
+  { value: "INACTIVE", label: "Inactive" },
 ];
 
-const degreeTabs: TabItem[] = [
-  { value: "all-degrees", label: "All Degrees" },
-  { value: "bsc", label: "BSc" },
-  { value: "msc", label: "MSc" },
-];
 
-const departmentTabs: TabItem[] = [
-  { value: "all-depts", label: "All Departments" },
-  { value: "CSE", label: "CSE" },
-  { value: "EEE", label: "EEE" },
-  { value: "BBA", label: "BBA" },
-  { value: "ENG", label: "ENG" },
-];
 
 const ProgramsTabs = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const {data}=useGetDepartment('')
+  const departmentTabs=data?.data||[]
 
-  const currentStatus = searchParams.get("status") || "all";
-  const currentDegree = searchParams.get("degree") || "all-degrees";
-  const currentDept = searchParams.get("dept") || "all-depts";
-
+  const currentStatus = searchParams.get("status") || "All";
+  const currentDegree = searchParams.get("degree") || "All";
+  const currentDept = searchParams.get("department") || "All";
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
+    
     params.set(key, value);
     router.push(`?${params.toString()}`, { scroll: false });
   };
+
+ 
 
 
   const tabClass = `
@@ -78,9 +72,10 @@ const ProgramsTabs = () => {
             <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Degree</span>
             <Tabs value={currentDegree} onValueChange={(val) => handleFilterChange("degree", val)} className="w-max">
               <TabsList className="h-10 gap-1 rounded-xl bg-muted/80 p-1 border border-border/40">
-                {degreeTabs.map((tab) => (
-                  <TabsTrigger key={tab.value} value={tab.value} className={tabClass}>
-                    {tab.label}
+           
+                {['All',"BSC", "MSC", "BA", "BBA", "MBA"].map((value,index) => (
+                  <TabsTrigger key={index} value={value} className={tabClass}>
+                    {value}
                   </TabsTrigger>
                 ))}
               </TabsList>
@@ -94,18 +89,34 @@ const ProgramsTabs = () => {
         <div className="flex flex-wrap items-center justify-between gap-4">
           
       
-          <div className="flex flex-col gap-1.5 overflow-x-auto max-w-full pb-1">
-            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Department</span>
-            <Tabs value={currentDept} onValueChange={(val) => handleFilterChange("dept", val)} className="w-max">
-              <TabsList className="h-10 gap-1 rounded-xl bg-muted/80 p-1 border border-border/40">
-                {departmentTabs.map((tab) => (
-                  <TabsTrigger key={tab.value} value={tab.value} className={tabClass}>
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-          </div>
+          
+<div className="flex max-w-full flex-col gap-1.5 overflow-x-auto pb-1">
+  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+    Department
+  </span>
+
+  <Tabs
+    value={currentDept}
+    onValueChange={(value) => handleFilterChange("department", value)}
+    className="w-max"
+  >
+    <TabsList className="h-10 gap-1 rounded-xl border border-border/40 bg-muted/80 p-1">
+      <TabsTrigger value="All" className={tabClass}>
+        All
+      </TabsTrigger>
+
+      {departmentTabs.map((tab: IDepartment) => (
+        <TabsTrigger
+          key={tab.id}
+          value={tab.code}
+          className={tabClass}
+        >
+          {tab.code}
+        </TabsTrigger>
+      ))}
+    </TabsList>
+  </Tabs>
+</div>
 
           {/* Advanced Filter Button */}
           <div className="flex items-end h-full">

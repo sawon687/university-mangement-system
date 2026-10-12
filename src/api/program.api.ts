@@ -1,10 +1,14 @@
 
+import { useParams } from '../hooks/params.hook';
 import apiFetch from "../lib/api-ofetch";
+import { QueryParms } from '../type';
 import { IProgram } from '../type/program.type';
 
 
-export function getAllPrograms() {
-  return apiFetch(`/admin/all-program`, {
+export function getAllPrograms(params:QueryParms) {
+  const searchParasm=useParams(params)
+  console.log('searchparms',searchParasm)
+  return apiFetch(`/admin/all-program?${searchParasm.toString()}`, {
     method: "GET",
   });
 }

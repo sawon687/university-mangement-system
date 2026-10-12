@@ -33,7 +33,7 @@ export function useUpdatePassword(){
 
 export function useGetMe(){
     return useQuery({
-        queryKey:['user'],
+        queryKey:['usersProfile'],
         queryFn:getMe,
         retry:false
     })

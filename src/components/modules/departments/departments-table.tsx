@@ -76,13 +76,13 @@ const DepartmentsTable = ({ departments, loading }: props) => {
                         <Badge variant="secondary">{department.code}</Badge>
                       </TableCell>
 
-                      <TableCell>{department._count.students}</TableCell>
+                      <TableCell>{department._count?.students ?? 0}</TableCell>
 
-                      <TableCell>{department._count.students}</TableCell>
+                      <TableCell>{department._count?.students ?? 0}</TableCell>
 
-                      <TableCell>{department._count.program}</TableCell>
+                      <TableCell>{department._count?.program ?? 0}</TableCell>
 
-                      <TableCell>{department._count.course}</TableCell>
+                      <TableCell>{department._count?.course ?? 0}</TableCell>
 
                       <TableCell>
                         <DropdownMenu>

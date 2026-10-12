@@ -17,13 +17,14 @@ export interface IProgram {
   isActive: boolean;
 }
 
-export interface ProgramMetaData {
+export interface MetaData {
   currentPage: number;
   total: number
-  totalPages: number;
+  totalPage: number;
+  
 }
 
 export interface InitialPrograms {
   programs: IProgram[];
-  meta: ProgramMetaData;
+  meta:MetaData;
 }

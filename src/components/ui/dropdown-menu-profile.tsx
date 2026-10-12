@@ -27,7 +27,7 @@ interface Props {
 
 export function DropdownMenuProfile({ user }: Props) {
   const { mutate: logout } = useLoggedOut();
-  const Queryclient = useQueryClient();
+    const Queryclient = useQueryClient();
   const router = useRouter();
   const initials = user.name
     ?.split(" ")
@@ -37,6 +37,7 @@ export function DropdownMenuProfile({ user }: Props) {
     .toUpperCase();
 
   const handlelogout = () => {
+  
     logout(undefined, {
       onSuccess: (res) => {
         console.log("response result", res);
@@ -45,7 +46,8 @@ export function DropdownMenuProfile({ user }: Props) {
           description: res.message,
           type: "success",
         });
-        Queryclient.removeQueries({ queryKey: ["user"] });
+        Queryclient.removeQueries({ queryKey: ["usersProfile"] });
+    router.refresh()
       },
       onError: (error) => {
         toast.add({
@@ -58,6 +60,8 @@ export function DropdownMenuProfile({ user }: Props) {
   };
 
   const userDashbaordUrl=user.role=='ADMIN'?'admin':user.role=='STUDENT'?'student':user.role=='INSTRUCTOR'?'instructor':'/'
+  
+  const userProfieUrl=user.role=='STUDENT'?'/student/profile':user.role=='INSTRUCTOR'?'/instructor/profile':'/'
 
   return (
     <DropdownMenuContent
@@ -68,9 +72,9 @@ export function DropdownMenuProfile({ user }: Props) {
       {/* User Information */}
       <div className="flex items-center gap-3 rounded-lg px-2 py-3">
         {/* Avatar */}
-        {user.userPhoto ? (
+        { user.studentProfile?.profilePhoto || user.instructorProfile?.profilePhoto ? (
           <img
-            src={user.userPhoto}
+            src={user.studentProfile?.profilePhoto||user.instructorProfile?.profilePhoto}
             alt={user.name || "User"}
             className="size-11 shrink-0 rounded-full object-cover ring-1 ring-border"
           />
@@ -98,10 +102,14 @@ export function DropdownMenuProfile({ user }: Props) {
       <DropdownMenuSeparator />
 
       {/* Profile */}
-      <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5">
+     {
+       user.role ==='INSTRUCTOR'|| user.role === 'STUDENT'&& (
+         <DropdownMenuItem render={<Link href={userProfieUrl}/>} className="cursor-pointer gap-3 rounded-lg py-2.5">
         <UserIcon className="size-4" />
         <span>Profile</span>
       </DropdownMenuItem>
+       )
+     }
 
       {/* Billing */}
       <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5">

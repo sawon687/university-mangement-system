@@ -10,52 +10,30 @@ import {
 import { Button } from "../../ui/button";
 import Stat from "./program-stat";
 import { IProgram } from "../../../type/program.type";
-import { IDepartment } from "../../../type";
+import { IDepartment, QueryParms } from "../../../type";
 import { useGetProgram } from "../../../hooks/program.hook";
 import { Card, CardHeader, CardTitle } from "../../ui/card";
 import ProgramsTabs from "./pragrams-tabs";
 import ProgramListSkeleton from "./program.loading";
+import { useSearchParams } from "next/navigation";
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("en-BD").format(value);
+
 export default function ProgramList() {
-  const { data, isLoading } = useGetProgram();
+  const searchParams = useSearchParams();
+  const queryParams:QueryParms = {
+    department: searchParams.get("department") ?? undefined,
+    degree: (["BSC", "MSC", "BA", "BBA", "MBA", "All"] as const).find(
+      (degree) => degree === searchParams.get("degree"),
+    ),
+    status: searchParams.get("status") ?? undefined,
+  };
+
+  const { data, isLoading } = useGetProgram(queryParams);
   const programs = data?.data.programs;
-  console.log("program", programs);
   return (
     <div>
-      {/* Overview */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* <OverviewCard
-          title="Total Programs"
-          value={programs.length}
-          icon={<BookOpen className="size-5" />}
-          description="All academic programs"
-        />
-
-        <OverviewCard
-          title="Active Programs"
-          value={activePrograms.length}
-          icon={<GraduationCap className="size-5" />}
-          description="Currently available"
-        />
-
-        <OverviewCard
-          title="Inactive Programs"
-          value={inactivePrograms.length}
-          icon={<CalendarDays className="size-5" />}
-          description="Currently unavailable"
-        />
-
-        <OverviewCard
-          title="Total Credits"
-          value={programs.reduce(
-            (total, program) => total + program.totalCredits,
-            0,
-          )}
-          icon={<Wallet className="size-5" />}
-          description="Across all programs"
-        /> */}
-      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
 
       {/* Programs */}
       <Card>

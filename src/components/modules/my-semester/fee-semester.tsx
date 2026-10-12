@@ -94,7 +94,6 @@ export default function FeeSemester({ semesterId }: FeeSemesterProps) {
     3: "",
   });
 
-  // কোন ইনস্টলমেন্টে ক্লিক করা হয়েছে তা ট্র্যাক করার জন্য
   const [loadingInstallmentNumber, setLoadingInstallmentNumber] = useState<InstallmentNumber | null>(null);
 
   const { mutate: paymentCreate, isPending } = usePaymentsCreate();
@@ -107,7 +106,7 @@ export default function FeeSemester({ semesterId }: FeeSemesterProps) {
     const input = amounts[installment.number];
     const amount = input.trim() === "" ? installment.remaining : Number(input);
 
-    // কোন ইনস্টলমেন্ট লোড হচ্ছে তা সেট করা
+  
     setLoadingInstallmentNumber(installment.number);
 
     paymentCreate(

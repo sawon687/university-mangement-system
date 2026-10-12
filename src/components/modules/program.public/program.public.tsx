@@ -11,11 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  InitialPrograms,
-  IProgram,
-  ProgramMetaData,
-} from "../../../type/program.type";
+import { InitialPrograms, IProgram } from "../../../type/program.type";
 import ProgramCard from "./programCard";
 import { useEffect, useState } from "react";
 import { useGetDepartment } from "../../../hooks/department.hook";
@@ -23,7 +19,8 @@ import { IDepartment } from "../../../type";
 import { inputClass } from "../../../utils/input-class";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useParams } from "../../../hooks/params.hook";
-import { useDebaunce } from '../../../hooks/debaunce.hook';
+import { useDebaunce } from "../../../hooks/debaunce.hook";
+import UsePagination from "../../../hooks/usepagenation.hook";
 
 const bgHeaderColor = {
   // CSE
@@ -63,19 +60,22 @@ const ProgramPublic = ({ data }: props) => {
   const reuslt = useGetDepartment("");
   const departments = reuslt?.data?.data || [];
   console.log("departments", departments);
-  const [department, setDepartment] = useState("All Department");
-  const [studyFormat, setStudyFormat] = useState("All Study");
-  const [degree, setDegreee] = useState("All Degree");
+  const [department, setDepartment] = useState("All");
+  const [studyFormat, setStudyFormat] = useState("All");
+  const [degree, setDegree] = useState("All");
   const [search, setSearch] = useState("");
-  const searchTram=useDebaunce(search)
+  const meta = data?.meta;
+  const [page, setPage] = useState(1);
+  const searchTram = useDebaunce(search);
   const router = useRouter();
+
   console.log("first", data);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(params);
-    const departmentvalue = searchParams.get("department") || "CSE";
-    const degreeTypevalue = searchParams.get("degree") || "BSC";
-    const studyvalue = searchParams.get("study") || "TRI_SEMESTER";
+    const departmentvalue = searchParams.get("department") || "All";
+    const degreeTypevalue = searchParams.get("degree") || "All";
+    const studyvalue = searchParams.get("study") || "All";
 
     if (searchParams) {
       if (departmentvalue && department !== departmentvalue) {
@@ -87,13 +87,15 @@ const ProgramPublic = ({ data }: props) => {
       if (studyvalue && studyFormat !== studyvalue) {
         searchParams.set("study", studyFormat);
       }
-      if(searchParams)
-      {
-         searchParams.set('search',searchTram)
+      if (searchParams) {
+        searchParams.set("search", searchTram);
+      }
+      if (page) {
+        searchParams.set("page", String(page));
       }
       router.push(`/programs?${searchParams.toString()}`, { scroll: false });
     }
-  }, [department, studyFormat, degree,searchTram]);
+  }, [department, studyFormat, degree, searchTram, page]);
 
   return (
     <div>
@@ -103,10 +105,9 @@ const ProgramPublic = ({ data }: props) => {
         <div className="mb-10 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
             {/* Search */}
-            <div className="relative min-w-0 flex-1">
+            <div className="relative min-w-0 mt-5 flex-1">
               <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
               <Input
-      
                 placeholder="Search by program, department, or degree..."
                 className="h-12 rounded-xl border-slate-200
                  bg-slate-50 pl-11 pr-4 text-sm text-slate-900
@@ -115,69 +116,99 @@ const ProgramPublic = ({ data }: props) => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-             
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-col gap-2.5 sm:flex-row">
+       
               {/* Degree */}
-              <Select
-                value={degree}
-                onValueChange={(value) => setDegreee(value ?? "")}
-              >
-                <SelectTrigger className={`${inputClass} w-[160px]`}>
-                  <SelectValue placeholder="Select Degree" />
-                </SelectTrigger>
-                <SelectContent>
-                  {["BSC", "MSC", "BA", "BBA", "MBA"].map((value) => (
-                    <SelectItem key={value} value={value}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
 
-              {/* Department */}
-              <Select
-                value={department}
-                onValueChange={(value) =>
-                  setDepartment(value ?? "All Department")
-                }
-              >
-                <SelectTrigger className={`${inputClass} w-[160px]`}>
-                  <SelectValue placeholder="All Departments" />
-                </SelectTrigger>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                {/* Degree */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="ml-1 text-xs font-semibold text-slate-600">
+                    Degree Type
+                  </label>
 
-                <SelectContent>
-                  <SelectItem value="All Department">All Departments</SelectItem>
-                  {departments?.map((dep: IDepartment) => (
-                    <SelectItem key={dep.id} value={String(dep.code)}>
-                      {dep.code}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                  <Select
+                    value={degree}
+                    onValueChange={(value) => setDegree(value ?? "All")}
+                  >
+                    <SelectTrigger
+                      className={`${inputClass} w-full sm:w-[160px]`}
+                    >
+                      <SelectValue placeholder="Select Degree" />
+                    </SelectTrigger>
 
-              {/* Study Format */}
-              <Select
-                value={studyFormat}
-                onValueChange={(value) => setStudyFormat(value ?? "")}
-              >
-                <SelectTrigger className={`${inputClass} w-[160px]`}>
-                  <SelectValue placeholder="Select System" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[
-                    { value: "TRI_SEMESTER", label: "Trimester (3 terms)" },
-                    { value: "BI_SEMESTER", label: "Semester (2 terms)" },
-                  ].map((sem) => (
-                    <SelectItem value={sem.value}>{sem.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <SelectContent>
+                      <SelectItem value="All">All Degrees</SelectItem>
+                      {["BSC", "MSC", "BA", "BBA", "MBA"].map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {value}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Department */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="ml-1 text-xs font-semibold text-slate-600">
+                    Department
+                  </label>
+
+                  <Select
+                    value={department}
+                    onValueChange={(value) => setDepartment(value ?? "All")}
+                  >
+                    <SelectTrigger
+                      className={`${inputClass} w-full sm:w-[160px]`}
+                    >
+                      <SelectValue placeholder="Select Department" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <SelectItem value="All">All Departments</SelectItem>
+                      {departments?.map((dep: IDepartment) => (
+                        <SelectItem key={dep.id} value={String(dep.code)}>
+                          {dep.code}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Study Format */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="ml-1 text-xs font-semibold text-slate-600">
+                    Study Format
+                  </label>
+
+                  <Select
+                    value={studyFormat}
+                    onValueChange={(value) => setStudyFormat(value ?? "All")}
+                  >
+                    <SelectTrigger
+                      className={`${inputClass} w-full sm:w-[160px]`}
+                    >
+                      <SelectValue placeholder="Select Format" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <SelectItem value="All">All Formats</SelectItem>
+                      {[
+                        { value: "TRI_SEMESTER", label: "Trimester (3 terms)" },
+                        { value: "BI_SEMESTER", label: "Semester (2 terms)" },
+                      ].map((sem) => (
+                        <SelectItem key={sem.value} value={sem.value}>
+                          {sem.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+       
 
         {/* Result Header */}
         <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -208,29 +239,66 @@ const ProgramPublic = ({ data }: props) => {
           </Button>
         </div>
         {/* Program Grid */}
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-          {programs.map((program: IProgram) => {
-            const headerKey =
-              `${program.department?.code ?? ""}_${program.degreeType ?? ""}` as keyof typeof bgHeaderColor;
-            const headerClass =
-              bgHeaderColor[headerKey] ?? "bg-slate-800 text-white";
 
-            return (
-              <ProgramCard
-                key={program.id}
-                program={program}
-                headerClass={headerClass}
-              />
-            );
-          })}
-        </div>
+        {/* Program Grid */}
+        {programs.length > 0 ? (
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+            {programs.map((program: IProgram) => {
+              const headerKey =
+                `${program.department?.code ?? ""}_${program.degreeType ?? ""}` as keyof typeof bgHeaderColor;
+
+              const headerClass =
+                bgHeaderColor[headerKey] ?? "bg-slate-800 text-white";
+
+              return (
+                <ProgramCard
+                  key={program.id}
+                  program={program}
+                  headerClass={headerClass}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex min-h-[320px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center">
+            <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-orange-100">
+              <Search className="size-7 text-orange-500" />
+            </div>
+
+            <h3 className="text-xl font-semibold text-slate-900">
+              No Programs Found
+            </h3>
+
+            <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
+              {search.trim()
+                ? `We couldn't find any programs matching "${search}". Try a different search keyword or change your filters.`
+                : "No academic programs match your selected filters. Try changing your department, degree, or study format."}
+            </p>
+
+            <Button
+              variant="outline"
+              className="mt-5 rounded-xl border-orange-200 bg-white text-orange-600 hover:bg-orange-50"
+              onClick={() => {
+                setSearch("");
+                setDegree("All");
+                setDepartment("All");
+                setStudyFormat("All");
+                setPage(1);
+              }}
+            >
+              Clear All Filters
+            </Button>
+          </div>
+        )}
 
         {/* Pagination Dots */}
-        <div className="mt-14 flex justify-center gap-3">
-          <span className="size-3.5 rounded-full bg-orange-600 shadow-md shadow-orange-600/50 scale-110 cursor-pointer" />
-          <span className="size-3.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-colors cursor-pointer" />
-          <span className="size-3.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-colors cursor-pointer" />
-        </div>
+        {meta && (
+          <UsePagination
+            onPageChange={setPage}
+            totalPages={meta.totalPage}
+            currentPage={meta.currentPage}
+          />
+        )}
       </section>
     </div>
   );

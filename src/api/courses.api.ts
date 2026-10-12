@@ -1,14 +1,25 @@
 import { useParams } from "../hooks/params.hook";
 import apiFetch from "../lib/api-ofetch";
+import {  IUser } from "../type";
+import { ApiResponse } from "../type/api.type";
 import { ICourse, QueryParms } from "../type/courses.type";
-import { CourseMarks } from '../type/exam.type';
+import { CourseMarks } from "../type/exam.type";
+import { MetaData } from "../type/program.type";
+export interface ICourseAssignmentResponse {
+  course: ICourse[];
+  instructor: IUser[];
+  meta: MetaData;
+}
 
 export function getCourseAsssignmentData(params: QueryParms) {
   const searchParams = useParams(params);
 
-  return apiFetch(`/admin/course-assignment?${searchParams.toString()}`, {
-    method: "GET",
-  });
+  return apiFetch<ApiResponse<ICourseAssignmentResponse>>(
+    `/admin/course-assignment?${searchParams.toString()}`,
+    {
+      method: "GET",
+    },
+  );
 }
 
 export function admincreateCourse(paylaod: ICourse) {

@@ -43,62 +43,9 @@ import { IDepartment, IUser } from "../../../type";
 import { getDepartments } from "../../../api/deparment.api";
 import { useDebaunce } from "../../../hooks/debaunce.hook";
 import { QueryParms } from "../../../type/courses.type";
-const users = [
-  {
-    id: 1,
-    name: "Md. Al Jihad",
-    email: "jihad@example.com",
-    role: "ADMIN",
-    department: "Administration",
-    status: "ACTIVE",
-    initials: "AJ",
-  },
-  {
-    id: 2,
-    name: "Md. Rahim Uddin",
-    email: "rahim@example.com",
-    role: "INSTRUCTOR",
-    department: "Computer Science & Engineering",
-    status: "ACTIVE",
-    initials: "RU",
-  },
-  {
-    id: 3,
-    name: "Nusrat Jahan",
-    email: "nusrat@example.com",
-    role: "INSTRUCTOR",
-    department: "Business Administration",
-    status: "ACTIVE",
-    initials: "NJ",
-  },
-  {
-    id: 4,
-    name: "Sakib Hasan",
-    email: "sakib@example.com",
-    role: "STUDENT",
-    department: "Computer Science & Engineering",
-    status: "ACTIVE",
-    initials: "SH",
-  },
-  {
-    id: 5,
-    name: "Mim Akter",
-    email: "mim@example.com",
-    role: "STUDENT",
-    department: "English",
-    status: "PENDING",
-    initials: "MA",
-  },
-  {
-    id: 6,
-    name: "Tanvir Ahmed",
-    email: "tanvir@example.com",
-    role: "STUDENT",
-    department: "Electrical & Electronic Engineering",
-    status: "ACTIVE",
-    initials: "TA",
-  },
-];
+import { MetaData } from "../../../type/program.type";
+import UsePagination from "../../../hooks/usepagenation.hook";
+import { DepartmentTableSkeleton } from "../../loading/department-loading/department-Skelation-Table";
 
 const getRoleBadge = (role: string) => {
   switch (role) {
@@ -139,14 +86,24 @@ const UsersTable = () => {
   const [status, setStatus] = useState("All Status");
   const [search, setSearch] = useState("");
   const userSearch = useDebaunce(search, 300);
+  const [page, setPage] = useState(1);
+  const limit = 6;
+  useEffect(() => {
+    setPage(1);
+  }, [userSearch, department, status, role]);
   const params: QueryParms = {
     role,
     status,
-    department,
-    userSearch,
+    department:department==='All Department'?'':department,
+    search: userSearch,
+    limit,
+    page
   };
-  const { data, isLoading } = useGetUsers(params);
-  const users = data?.data || [];
+  const { data, isLoading, isError } = useGetUsers(params);
+  const users = data?.data?.allUsers || [];
+  const meta = data?.data?.meta;
+  const totalPage = Number(meta?.totalPage) || 1;
+  const currentPage = Number(meta?.currentPage) || 1;
 
   useEffect(() => {
     getDepartments("").then((result) => setDepartments(result?.data ?? []));
@@ -189,7 +146,7 @@ const UsersTable = () => {
                 </SelectTrigger>
 
                 <SelectContent>
-                  <SelectItem value="All Deparment">All Departments</SelectItem>
+                  <SelectItem value="All Department">All Departments</SelectItem>
                   {departments?.map((dep) => (
                     <SelectItem key={dep.id} value={String(dep.code)}>
                       {dep.code}
@@ -219,7 +176,7 @@ const UsersTable = () => {
               {/* Status */}
               <Select
                 value={status}
-                onValueChange={(value) => setStatus(value??'')}
+                onValueChange={(value) => setStatus(value ?? "")}
               >
                 <SelectTrigger className="w-full sm:w-[150px]">
                   <SelectValue placeholder="All status" />
@@ -250,76 +207,95 @@ const UsersTable = () => {
               </TableHeader>
 
               <TableBody>
-                {users.map((user: IUser) => (
-                  <TableRow key={user.id}>
-                    {/* User */}
-                    <TableCell className="pl-6">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="size-9">
-                          <AvatarFallback className="bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400">
-                            {user.name.slice(0, 1).toLocaleUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                {isLoading ? (
+                  <DepartmentTableSkeleton />
+                ) : (
+                  users.map((user: IUser) => (
+                    <TableRow key={user.id}>
+                      {/* User */}
+                      <TableCell className="pl-6">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="size-9">
+                            <AvatarFallback className="bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400">
+                              {user.name.slice(0, 1).toLocaleUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
 
-                        <div className="min-w-0">
-                          <p className="font-medium">{user.name}</p>
+                          <div className="min-w-0">
+                            <p className="font-medium">{user.name}</p>
 
-                          <p className="truncate text-xs text-muted-foreground">
-                            {user.email}
-                          </p>
+                            <p className="truncate text-xs text-muted-foreground">
+                              {user.email}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    {/* Role */}
-                    <TableCell>{usegetStatusBadge(user.role)}</TableCell>
+                      {/* Role */}
+                      <TableCell>{usegetStatusBadge(user.role)}</TableCell>
 
-                    {/* Department */}
-                    <TableCell>
-                      <span className="text-sm text-muted-foreground">
-                        {user.instructor?.department?.name}
-                      </span>
-                    </TableCell>
+                      {/* Department */}
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {user.studentProfile?.department?.name ??
+                            user.instructorProfile?.department?.name ??
+                            "--"}
+                        </span>
+                      </TableCell>
 
-                    {/* Status */}
-                    <TableCell>{usegetStatusBadge(user.userStatus)}</TableCell>
+                      {/* Status */}
+                      <TableCell>
+                        {usegetStatusBadge(user.userStatus)}
+                      </TableCell>
 
-                    {/* Actions */}
-                    <TableCell className="pr-6">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                          >
-                            <MoreHorizontal className="size-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
+                      {/* Actions */}
+                      <TableCell className="pr-6">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-8"
+                            >
+                              <MoreHorizontal className="size-4" />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
 
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
-                            <UserRound className="mr-2 size-4" />
-                            View Profile
-                          </DropdownMenuItem>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                              <UserRound className="mr-2 size-4" />
+                              View Profile
+                            </DropdownMenuItem>
 
-                          <DropdownMenuItem>Edit User</DropdownMenuItem>
+                            <DropdownMenuItem>Edit User</DropdownMenuItem>
 
-                          <DropdownMenuItem>Change Status</DropdownMenuItem>
+                            <DropdownMenuItem>Change Status</DropdownMenuItem>
 
-                          <DropdownMenuSeparator />
+                            <DropdownMenuSeparator />
 
-                          <DropdownMenuItem className="text-destructive focus:text-destructive">
-                            Delete User
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                            <DropdownMenuItem className="text-destructive focus:text-destructive">
+                              Delete User
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
+          </div>
+          <div>
+            {!isLoading && !isError && users.length > 0 && (
+              <div className="border-t py-3">
+                <UsePagination
+                  totalPages={totalPage}
+                  currentPage={currentPage}
+                  onPageChange={setPage}
+                />
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

@@ -48,7 +48,7 @@ const AdmissionApplyForm = ({
 
       console.log("addmission paylaod", addmisionPaylaod);
 
-      application(addmisionPaylaod, {
+      application(addmisionPaylaod as Parameters<typeof application>[0], {
         onSuccess: (res) => {
           toast.add({
             title: "Application success",

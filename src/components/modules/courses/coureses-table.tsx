@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BookOpen, MoreHorizontal, Search, UserPlus } from "lucide-react";
-
+import { usegetStatusBadge } from '../../../hooks/badgeStatus.hook'
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+
 import {
   Card,
   CardContent,
@@ -12,22 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 import {
   Select,
@@ -50,94 +34,36 @@ import { useGetDepartment } from "../../../hooks/department.hook";
 import { IDepartment } from "../../../type";
 
 import { useDebaunce } from "../../../hooks/debaunce.hook";
-import { useParams } from "../../../hooks/params.hook";
-import { useSearchParams } from "next/navigation";
-import { QueryParms } from '../../../type/courses.type';
-import { getCourseAsssignmentData } from '../../../api/courses.api';
-import { useGetAssignmentData } from '../../../hooks/courses.hook';
-import { DepartmentTableSkeleton } from '../../loading/department-loading/department-Skelation-Table';
-// const courses = [
-//   {
-//     id: "7d6e64ef-4c5e-44de-990c-8a96f2441d67",
-//     title: "Discrete Mathematics",
-//     code: "CSE-103",
-//     credit: 3,
-//     semesterNumber: 1,
-//     status: "UNASSIGNED",
-//     department: {
-//       id: "342c09b0-f962-4966-b1d7-70a7bbf7b9cd",
-//       name: "Computer Science and Engineering",
-//       code: "CSE",
-//     },
-//   },
-//   {
-//     id: "2",
-//     title: "Data Structures",
-//     code: "CSE-105",
-//     credit: 3,
-//     semesterNumber: 1,
-//     status: "ASSIGNED",
-//     instructor: "Md. Rahman",
-//     department: {
-//       id: "342c09b0-f962-4966-b1d7-70a7bbf7b9cd",
-//       name: "Computer Science and Engineering",
-//       code: "CSE",
-//     },
-//   },
-//   {
-//     id: "3",
-//     title: "Database Management System",
-//     code: "CSE-203",
-//     credit: 3,
-//     semesterNumber: 2,
-//     status: "UNASSIGNED",
-//     department: {
-//       id: "342c09b0-f962-4966-b1d7-70a7bbf7b9cd",
-//       name: "Computer Science and Engineering",
-//       code: "CSE",
-//     },
-//   },
-// ];
-
-const instructors = [
-  {
-    id: "teacher-1",
-    name: "Md. Rahman",
-    code: "TCH-001",
-    departmentId: "342c09b0-f962-4966-b1d7-70a7bbf7b9cd",
-  },
-  {
-    id: "teacher-2",
-    name: "A. Hossain",
-    code: "TCH-004",
-    departmentId: "342c09b0-f962-4966-b1d7-70a7bbf7b9cd",
-  },
-];
+import { ICourse, QueryParms } from "../../../type/courses.type";
+import { useGetAssignmentData } from "../../../hooks/courses.hook";
+import { DepartmentTableSkeleton } from "../../loading/department-loading/department-Skelation-Table";
+import UsePagination from "../../../hooks/usepagenation.hook";
+import { MetaData } from "../../../type/program.type";
 
 const CouresesTable = () => {
- const [selectDep, setSelectDep] = useState<string>("");
-const [seaarchTram, setSearchTram] = useState("");
+  const [selectDep, setSelectDep] = useState<string>("");
+  const [seaarchTram, setSearchTram] = useState("");
+ const [page, setPage] = useState(1);
+  const search = useDebaunce(seaarchTram, 500);
+  const limit = 6;
+ 
+useEffect(()=>{
+  setPage(1)
+},[search,selectDep])
+  const queryParams: QueryParms = {
+    departmentId: selectDep=='all'?"":selectDep,
+    courseSearch: search,
+    page,
+    limit,
+  };
+  
 
-const search = useDebaunce(seaarchTram, 500);
-
-const searchParams = useSearchParams();
-
-const page = Number(searchParams.get("page") || 1);
-const limit = Number(searchParams.get("limit") || 6);
-
-const queryParams: QueryParms = {
-  departmentId: selectDep,
-  courseSearch: search,
-  page,
-  limit,
-};
-
-const { data: result, isLoading } = useGetAssignmentData(queryParams);
+  const { data: result, isLoading,isError } = useGetAssignmentData(queryParams);
   const courses = result?.data?.course || [];
-  const instructor=result?.data?.instructor || []
-  console.log("result", courses);
-  console.log('instrutor',instructor)
-  console.log('instrour sawon',result)
+  const instructor = result?.data?.instructor || [];
+  const meta = result?.data?.meta;
+  const totalpage=Number(meta?.totalPage)||1
+  const currentpage=Number(meta?.currentPage)||1
   const { data } = useGetDepartment("");
   console.log("selectDept", selectDep);
   const departments: IDepartment[] = (data?.data ?? []) as IDepartment[];
@@ -203,76 +129,87 @@ const { data: result, isLoading } = useGetAssignmentData(queryParams);
 
               {/* Table Body */}
               <TableBody>
-                {isLoading ? (
-                Array.from({length:6}).map((_,index)=>{
-                     <DepartmentTableSkeleton />
-                })
-                ) : (
-                  courses.map((course: any) => (
-                  <TableRow key={course.id}>
-                    {/* Course */}
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-muted/40">
-                          <BookOpen className="size-4 text-muted-foreground" />
-                        </div>
+                {isLoading
+                  ? Array.from({ length: 6 }).map((_, index) => (
+                      <DepartmentTableSkeleton key={index} />
+                    ))
+                  : courses.map((course: ICourse) => (
+                      <TableRow key={course.id}>
+                        {/* Course */}
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-muted/40">
+                              <BookOpen className="size-4 text-muted-foreground" />
+                            </div>
 
-                        <div className="min-w-0">
-                          <p className="font-medium">{course.title}</p>
+                            <div className="min-w-0">
+                              <p className="font-medium">{course.title}</p>
 
-                          <p className="text-xs text-muted-foreground">
-                            {course.code}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
+                              <p className="text-xs text-muted-foreground">
+                                {course.code}
+                              </p>
+                            </div>
+                          </div>
+                        </TableCell>
 
-                    {/* Department */}
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">{course.department.code}</p>
+                        {/* Department */}
+                        <TableCell>
+                          <div>
+                            <p className="font-medium">
+                              {course.department.code}
+                            </p>
 
-                        <p className="max-w-[220px] truncate text-xs text-muted-foreground">
-                          {course.department.name}
-                        </p>
-                      </div>
-                    </TableCell>
+                            <p className="max-w-[220px] truncate text-xs text-muted-foreground">
+                              {course.department.name}
+                            </p>
+                          </div>
+                        </TableCell>
 
-                    {/* Credit */}
-                    <TableCell>{course.credit}</TableCell>
+                        {/* Credit */}
+                        <TableCell>{course.credit}</TableCell>
 
-                    {/* Semester */}
-                    <TableCell>Semester {course.semesterNumber}</TableCell>
+                        {/* Semester */}
+                        <TableCell>Semester {course.semesterNumber}</TableCell>
 
-                    {/* Instructor */}
-                    <TableCell>
-                      {course.status === "ASSIGNED" ? (
-                        <div>
-                          <p className="font-medium">{course.instructor}</p>
+                        {/* Instructor */}
+                        <TableCell>
+                          
+                           
+                            {usegetStatusBadge(course.status ?? "UNASSIGNED")}
+                          
+                        </TableCell>
 
-                          <Badge variant="secondary" className="mt-1">
-                            Assigned
-                          </Badge>
-                        </div>
-                      ) : (
-                        <Badge variant="outline">Unassigned</Badge>
-                      )}
-                    </TableCell>
+                        {/* Actions */}
+                        <TableCell>
+                          <div className="flex justify-end gap-2">
+                            {/* Assign */}
 
-                    {/* Actions */}
-                    <TableCell>
-                      <div className="flex justify-end gap-2">
-                        {/* Assign */}
-  
-                        {course.status === "UNASSIGNED" && <CoursesSheetSide course={course} instructors={instructor}  />}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                   ))
-                 )}
+                            { course.status === "UNASSIGNED" && (
+                              <CoursesSheetSide
+                                course={course}
+                                instructors={instructor}
+                              />
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </div>
+
+          {/* Pagination */}
+        {!isLoading &&
+          !isError &&
+          courses.length > 0 && (
+            <div className="border-t py-3">
+              <UsePagination
+                totalPages={totalpage}
+                currentPage={currentpage}
+                onPageChange={setPage}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

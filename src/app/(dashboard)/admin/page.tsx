@@ -30,7 +30,7 @@ const formatMoney = (amount: number) =>
     maximumFractionDigits: 0,
   }).format(amount);
 
-export default function AdminDashboardPage() {
+export default function page() {
   const {
     data: result,
     isLoading,
@@ -39,7 +39,10 @@ export default function AdminDashboardPage() {
     isFetching,
   } = useGetAdminStats();
 
-  const data = result?.data ?? null;
+  const data =
+    result && typeof result === "object" && "data" in result
+      ? (result as { data?: typeof result }).data ?? null
+      : result ?? null;
 
   const totalUsers = data?.userCount ?? 0;
   const totalStudents = data?.studentCoutn ?? 0;

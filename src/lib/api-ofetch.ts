@@ -1,9 +1,9 @@
-import { ofetch } from 'ofetch'
-const BASE_URL=process.env.NEXT_PUBLIC_API_URL
+import { ofetch } from "ofetch";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const apiFetch = ofetch.create({
- baseURL:BASE_URL,
- credentials:"include"
+  baseURL: BASE_URL,
+  credentials: "include",
+  retry: 0,
+});
 
-})
-
-export default apiFetch
+export default apiFetch;

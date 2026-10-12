@@ -59,22 +59,22 @@ export default function page() {
           <Separator className="my-2" />
 
           <CardFooter className="flex flex-col gap-3 pt-4">
-            <Button asChild className="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold">
-              <Link href="/checkout">
+            <Button  className="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold">
+            
                 <RefreshCcw className="w-4 h-4 mr-2" /> Try Payment Again
-              </Link>
+          
             </Button>
 
             <div className="flex items-center justify-between w-full gap-3">
-              <Button asChild variant="outline" className="flex-1">
-                <Link href="/">
+              <Button render={<Link href="/"></Link>} variant="outline" className="flex-1">
+                
                   <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
-                </Link>
+                
               </Button>
-              <Button asChild variant="ghost" className="flex-1 text-muted-foreground hover:text-foreground">
-                <Link href="/support">
+              <Button render={<Link href="/support"></Link>} variant="ghost" className="flex-1 text-muted-foreground hover:text-foreground">
+               
                   <HelpCircle className="w-4 h-4 mr-2" /> Support
-                </Link>
+         
               </Button>
             </div>
           </CardFooter>

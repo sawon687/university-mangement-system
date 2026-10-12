@@ -6,7 +6,7 @@ import { getStudentDashboard } from '../api/studentDashbaord.api';
 
 export function useGetStudentDasbordStats() {
   return useQuery({
-    queryKey: ["student dashbard"],
+    queryKey: ["student-dashbard"],
     queryFn: getStudentDashboard,
     retry: false,
   });

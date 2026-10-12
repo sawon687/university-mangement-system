@@ -1,11 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { adminCreateProgram, getAllPrograms } from '../api/program.api';
+import { QueryParms } from '../type';
 
 
-export function useGetProgram(){
+export function useGetProgram(params:QueryParms){
     return useQuery({
-        queryKey:['programs'],
-        queryFn:getAllPrograms,
+        queryKey:['programs',params],
+        queryFn:()=>getAllPrograms(params),
         
     })
 }

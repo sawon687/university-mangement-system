@@ -6,6 +6,7 @@ import ProgramPublic from "../../../../components/modules/program.public/program
 import { getAllPublicPrograms } from "../../../../api/program.public.api";
 import { QueryParms } from '../../../../type/courses.type';
 import { Suspense } from 'react';
+import Loading from '../../../loading';
 
 const Page = async ({searchParams}:{searchParams:QueryParms}) => {
     const params=await searchParams
@@ -50,7 +51,7 @@ const Page = async ({searchParams}:{searchParams:QueryParms}) => {
         </div>
       </section>
 
-     <Suspense fallback={<h1>h1....</h1>}>
+     <Suspense fallback={<Loading></Loading>}>
        <ProgramPublic data={data} />
      </Suspense>
 

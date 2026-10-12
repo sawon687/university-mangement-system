@@ -75,6 +75,19 @@ export const usegetStatusBadge = (status: string) => {
         "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-950/30 dark:text-rose-400",
       icon: XCircle,
     },
+    ASSIGNED: {
+  label: "Assigned",
+  className:
+    "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-400",
+  icon: CheckCircle2,
+},
+
+UNASSIGNED: {
+  label: "Unassigned",
+  className:
+    "border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300",
+  icon: CircleDashed,
+},
   };
 
   const config = statusConfig[status] ?? {

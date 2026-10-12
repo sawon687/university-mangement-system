@@ -6,6 +6,8 @@ export const useParams = (payload: QueryParms) => {
   if (payload.courseSearch?.trim()) {
     params.set("courseSearch", payload.courseSearch.trim());
   }
+  
+
 
   if (payload.instructorSearch?.trim()) {
     params.set("instructorSearch", payload.instructorSearch.trim());
@@ -24,19 +26,19 @@ export const useParams = (payload: QueryParms) => {
     params.set("role", payload.role);
   }
 
-  if (payload.department && payload.department !== "All Department") {
+  if (payload.department && payload.department !== "All") {
     params.set("department", payload.department);
   }
-  if (payload.status && payload.status !== "All Status") {
+  if (payload.status && payload.status !== "All") {
     params.set("status", payload.status);
   }
   if (payload.search) {
     params.set("search", payload.search);
   }
-  if (payload.study && payload.study !== "All Study") {
+  if (payload.study && payload.study !== "All ") {
     params.set("study", payload.study);
   }
-  if (payload.degree && payload.degree !== "All Degree") {
+  if (payload.degree && payload.degree !== "All") {
     params.set("degree", payload.degree);
   }
 

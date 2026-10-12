@@ -17,9 +17,9 @@ import { useLogin } from "../../hooks/auth.hook";
 import { toast } from "../ui/toast";
 import { useState } from "react";
 import { Eye, EyeOff, ShieldCheck, UserCheck, Wrench } from "lucide-react";
-import { Spinner } from '../ui/spinner';
-import { useRouter } from 'next/navigation';
-import { inputClass } from '../../utils/input-class';
+import { Spinner } from "../ui/spinner";
+import { useRouter } from "next/navigation";
+import { inputClass } from "../../utils/input-class";
 
 export function LoginForm() {
   const { mutate: login, isPending, isError } = useLogin();
@@ -42,12 +42,13 @@ export function LoginForm() {
       };
       login(loginData, {
         onSuccess: (res) => {
+          console.log("res", res);
           toast.add({
             title: "Login success",
             description: "welcome Back",
             type: "success",
           });
-          router.push('/');
+          router.push("/");
         },
 
         onError: (error: any) => {
@@ -59,9 +60,6 @@ export function LoginForm() {
 
   // Demo Login Handler for 3 fixed roles
   const handleDemoLogin = (email: string, pass: string, roleName: string) => {
-    form.setFieldValue("email", email);
-    form.setFieldValue("password", pass);
-    
     login(
       { email, password: pass },
       {
@@ -71,12 +69,12 @@ export function LoginForm() {
             description: "Welcome Back",
             type: "success",
           });
-          router.push('/');
+          router.push("/");
         },
         onError: (error: any) => {
           setErrorMessage(error.data?.message || "Demo login failed");
         },
-      }
+      },
     );
   };
 
@@ -137,7 +135,7 @@ export function LoginForm() {
                 field.state.meta.isTouched && !field.state.meta.isValid;
               const showBackendError =
                 isError && errorMessage?.toLowerCase().includes("password");
-              
+
               return (
                 <Field data-invalid={isInvalid || showBackendError}>
                   <div className="flex items-center">
@@ -189,7 +187,7 @@ export function LoginForm() {
           </form.Field>
 
           <Button type="submit" disabled={isPending}>
-            {isPending ? <Spinner /> : 'Login'}
+            {isPending ? <Spinner /> : "Login"}
           </Button>
 
           {/* 🚀 QUICK DEMO LOGIN BUTTONS */}
@@ -203,10 +201,13 @@ export function LoginForm() {
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-1.5 text-xs font-medium border-orange-500/30 hover:bg-orange-500/10"
-                onClick={() => handleDemoLogin("sawon5555@gmail.com", "sawon@123S", "Admin")}
+                onClick={() =>
+                  handleDemoLogin("sawon5555@gmail.com", "sawon@123S", "Admin")
+                }
                 disabled={isPending}
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-orange-600" /> 👨‍💼 Admin [Demo]
+                <ShieldCheck className="w-3.5 h-3.5 text-orange-600" /> 👨‍💼 Admin
+                [Demo]
               </Button>
 
               <Button
@@ -214,10 +215,13 @@ export function LoginForm() {
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-1.5 text-xs font-medium border-orange-500/30 hover:bg-orange-500/10"
-                onClick={() => handleDemoLogin("sawon666@gmail.com", "sawon@123", "Student")}
+                onClick={() =>
+                  handleDemoLogin("sawon666@gmail.com", "sawon@123", "Student")
+                }
                 disabled={isPending}
               >
-                <UserCheck className="w-3.5 h-3.5 text-orange-600" /> 👤 Student [Demo]
+                <UserCheck className="w-3.5 h-3.5 text-orange-600" /> 👤 Student
+                [Demo]
               </Button>
 
               <Button
@@ -225,10 +229,17 @@ export function LoginForm() {
                 variant="outline"
                 size="sm"
                 className="col-span-2 flex items-center gap-1.5 text-xs font-medium border-orange-500/30 hover:bg-orange-500/10"
-                onClick={() => handleDemoLogin("jahid333@gmail.com", "dd&Ho^fKlKaI", "Instructor")}
+                onClick={() =>
+                  handleDemoLogin(
+                    "jahid333@gmail.com",
+                    "dd&Ho^fKlKaI",
+                    "Instructor",
+                  )
+                }
                 disabled={isPending}
               >
-                <Wrench className="w-3.5 h-3.5 text-orange-600" /> 🛠️ Instructor [Demo]
+                <Wrench className="w-3.5 h-3.5 text-orange-600" /> 🛠️ Instructor
+                [Demo]
               </Button>
             </div>
           </div>

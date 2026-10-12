@@ -15,7 +15,7 @@ import {
 
 import { useGetInstrutorStats } from "../../../hooks/instrutorDashboad.hook";
 
-export default function InstructorDashboardPage() {
+export default function page() {
   const {
     data: response,
     isLoading,

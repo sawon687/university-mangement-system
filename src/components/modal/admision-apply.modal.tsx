@@ -26,12 +26,14 @@ const AdmissionApply = ({programId}:{programId:string}) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-2 shadow-sm">
+      <DialogTrigger
+        render={
+          <Button className="gap-2 py-5 shadow-sm">
           Apply Now
           <ArrowRight className="size-4" />
-        </Button>
-      </DialogTrigger>
+          </Button>
+        }
+      />
 
       <DialogContent
         className={cn(

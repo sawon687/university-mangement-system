@@ -30,11 +30,11 @@ import { IProgram } from "../../type/program.type";
 import { createCourseValidation } from "../../validation/course.validation";
 import { useCreateCourse } from "../../hooks/courses.hook";
 import { toast } from "../ui/toast";
-import { Spinner } from '../ui/spinner';
+import { Spinner } from "../ui/spinner";
 
 const CreateCourseFrom = ({ onClose }: { onClose: () => void }) => {
   const { data } = useGetDepartment("");
-  const { data: result } = useGetProgram();
+  const { data: result } = useGetProgram({});
   const { mutate: createCourse, isPending } = useCreateCourse();
   const programs: IProgram[] = result?.data?.programs || [];
   console.log("result progaram", result?.data.programs);
@@ -61,14 +61,14 @@ const CreateCourseFrom = ({ onClose }: { onClose: () => void }) => {
         description: value.description ?? "",
       };
 
-      createCourse(payload, {
+      createCourse(payload as Parameters<typeof createCourse>[0], {
         onSuccess: (res) => {
           toast.add({
             title: "Course  success",
             description: res.message,
             type: "success",
           });
-          onClose()
+          onClose();
         },
 
         onError: (error: any) => {
@@ -76,10 +76,13 @@ const CreateCourseFrom = ({ onClose }: { onClose: () => void }) => {
 
           toast.add({
             title: "Course feild",
-            description: error.data.message || error.errors.message||error.erros[0].message,
+            description:
+              error.data.message ||
+              error.errors.message ||
+              error.erros[0].message,
             type: "Error",
           });
-          onClose()
+          onClose();
         },
       });
     },
@@ -368,11 +371,15 @@ const CreateCourseFrom = ({ onClose }: { onClose: () => void }) => {
             Cancel
           </Button>
 
-     
-             <Button disabled={isPending} type="submit">
-                {isPending?<><Spinner/></>:'Create Course'}
-                </Button>
-          
+          <Button disabled={isPending} type="submit">
+            {isPending ? (
+              <>
+                <Spinner />
+              </>
+            ) : (
+              "Create Course"
+            )}
+          </Button>
         </div>
       </FieldGroup>
     </form>
