@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Application Route Hierarchy
 
-## Getting Started
+## Public Routes
+/                        → Home Page
+/about                   → About Us
+/contact                 → Contact Us
+/programs                → Programs Catalog
+/service                 → Services Page
 
-First, run the development server:
+## Authentication Routes
+/login                   → User Login
+/register                → User Registration
+/verify-account          → OTP / Email Verification
+/forgot-password         → Password Reset Request
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Admin Dashboard (Protected - Admin Only)
+/admin                   → Admin Overview
+/admin/courses           → Manage Courses
+/admin/departments       → Manage Departments
+/admin/programs          → Manage Academic Programs
+/admin/semesters          → Manage Semesters
+/admin/student-admission → Review Admissions
+/admin/users             → Manage All Users
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Instructor Dashboard (Protected - Instructor Only)
+/instructor              → Instructor Overview
+/instructor/course       → Assigned Courses
+/instructor/exam         → Exams & Assessments
+/instructor/profile      → Instructor Profile
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Student Dashboard (Protected - Student Only)
+/student                 → Student Overview
+/student/admission       → My Admission Application
+/student/my-payments     → Payment History & Tuition
+/student/my-result       → Exam Results
+/student/my-semester     → Current Semester Details
