@@ -26,6 +26,8 @@ export interface ICourse {
   department:IDepartment
   programId: string;
   credit: number;
+  grade?:string
+  gpa?:number
   semesterNumber: number;
   status?:"ASSIGNED"|"UNASSIGNED"
  instructor?:IUser

@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { IUser } from '../../../type';
+import ThemeToggle from '../../ThemeToggle/theme-toggle';
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -77,8 +78,9 @@ const Navbar = () => {
             );
           })}
         </nav>
-
-        {/* Right Side */}
+      {/* Right Side */}
+      <div className='flex items-center gap-5'>
+    <ThemeToggle/>
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -129,6 +131,7 @@ const Navbar = () => {
             </Button>
           </div>
         )}
+      </div>
       </div>
     </header>
   );

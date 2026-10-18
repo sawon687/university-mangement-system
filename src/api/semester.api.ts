@@ -34,3 +34,11 @@ export function updateSemester(data: IUpdateSemester & { id: string }) {
     body: payload,
   });
 }
+
+export function getStudentSemesterResult(semesterId:string) {
+
+  return apiFetch(`/users/semester-result/${semesterId}`, {
+    method: "GET",
+  });
+
+}

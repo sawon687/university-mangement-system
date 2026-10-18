@@ -1,10 +1,13 @@
  import React, { ReactNode } from 'react'
 import QueryProvider from './query.provider'
+import { ThemeProvider } from './ThemeProvider'
  
  const Provider = ({children}:{children:ReactNode}) => {
    return (
 
-      <QueryProvider>{children}</QueryProvider>
+     <ThemeProvider>
+       <QueryProvider>{children}</QueryProvider>
+     </ThemeProvider>
     
    )
  }

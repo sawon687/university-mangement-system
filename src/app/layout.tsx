@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Provider from "../provider";
 import { Toaster } from "../components/ui/toast";
 import { TooltipProvider } from "../components/ui/tooltip";
+import { ThemeProvider } from '../provider/ThemeProvider';
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -37,12 +38,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         inter.variable,
       )}
     >
-      <Provider>
+  
+        <Provider>
         <body className="min-h-full flex flex-col justify-center  " cz-shortcut-listen="true">
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
         </body>
       </Provider>
+      
     </html>
   );
 }
