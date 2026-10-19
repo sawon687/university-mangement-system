@@ -12,6 +12,7 @@ import {
   CreditCard,
   Bell,
   Settings,
+  BrainCircuit,
 } from "lucide-react";
 
 export const studentroutes = [
@@ -36,6 +37,13 @@ export const studentroutes = [
         title: "Profile",
         url: "/student/profile",
         icon: UserRound,
+      },
+    
+          {
+        name: "  Academic Insights ",
+        title: "  Academic Insights ",
+        url: "/student/academic-insights",
+        icon:BrainCircuit,
       },
       {
         name: "My Semester",

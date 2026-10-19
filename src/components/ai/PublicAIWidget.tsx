@@ -1,6 +1,9 @@
+
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { FormEvent, KeyboardEvent } from "react";
+
 import {
   Bot,
   Send,
@@ -13,10 +16,12 @@ import {
   MessageCircle,
   ArrowUpRight,
   Trash2,
+  RotateCcw,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+
 import {
   Dialog,
   DialogContent,
@@ -33,18 +38,10 @@ interface ChatMessage {
   content: string;
 }
 
-interface AIChatResponse {
-  success: boolean;
-  message: string;
-  data: {
-    answer: string;
-  };
-}
-
 const quickQuestions = [
   {
-    label: "Admission process",
-    message: "How can I apply for admission to UniSphere?",
+    label: "ভর্তি প্রক্রিয়া / Admission",
+    message: "আমি কীভাবে UniSphere-এ ভর্তি হতে পারি?",
     icon: GraduationCap,
   },
   {
@@ -53,18 +50,20 @@ const quickQuestions = [
     icon: BookOpen,
   },
   {
-    label: "Eligibility & documents",
-    message:
-      "What are the admission requirements and required documents?",
+    label: "Documents required",
+    message: "What documents are required for admission?",
     icon: ClipboardCheck,
   },
   {
     label: "Tuition fees",
-    message:
-      "How can I learn about tuition fees and payment methods?",
+    message: "How can I learn about tuition fees and payment methods?",
     icon: CreditCard,
   },
 ];
+
+function getErrorMessage(error: Error): string {
+  return error.message || "Something went wrong. Please try again.";
+}
 
 export default function PublicAIWidget() {
   const [open, setOpen] = useState(false);
@@ -72,7 +71,20 @@ export default function PublicAIWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [error, setError] = useState("");
 
-  const { mutate: sendChatMessage, isPending } = useAiChatBox();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const {
+    mutate: sendChatMessage,
+    isPending,
+  } = useAiChatBox();
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [messages, isPending, error]);
 
   const sendMessage = (value?: string) => {
     const message = (value ?? input).trim();
@@ -80,7 +92,7 @@ export default function PublicAIWidget() {
     if (!message || isPending) return;
 
     if (message.length > 1000) {
-      setError("Your question cannot exceed 1000 characters.");
+      setError("Your message cannot exceed 1000 characters.");
       return;
     }
 
@@ -97,11 +109,13 @@ export default function PublicAIWidget() {
     sendChatMessage(
       { message },
       {
-        onSuccess: (response: AIChatResponse) => {
-          const answer = response?.data?.answer;
+        onSuccess: (response) => {
+          const answer = response?.data?.answer?.trim();
 
-          if (!answer) {
-            setError("The AI returned an empty response. Please try again.");
+          if (!response?.success || !answer) {
+            setError(
+              "The AI could not generate a response. Please try again.",
+            );
             return;
           }
 
@@ -116,19 +130,28 @@ export default function PublicAIWidget() {
             assistantMessage,
           ]);
         },
-        onError: (err: Error) => {
-          setError(
-            err.message ||
-              "Unable to connect to UniSphere AI. Please try again.",
-          );
+
+        onError: (err) => {
+          setError(getErrorMessage(err));
         },
       },
     );
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     sendMessage();
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey &&
+      !event.nativeEvent.isComposing
+    ) {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+    }
   };
 
   const clearChat = () => {
@@ -139,9 +162,22 @@ export default function PublicAIWidget() {
     setError("");
   };
 
+  const retryLastMessage = () => {
+    if (isPending) return;
+
+    const lastUserMessage = [...messages]
+      .reverse()
+      .find((message) => message.role === "user");
+
+    if (!lastUserMessage) return;
+
+    setError("");
+    sendMessage(lastUserMessage.content);
+  };
+
   return (
     <>
-      {/* Floating AI Button */}
+      {/* Floating Assistant Button */}
       <Button
         type="button"
         onClick={() => setOpen(true)}
@@ -150,16 +186,20 @@ export default function PublicAIWidget() {
       >
         <span className="relative mr-1 flex size-8 items-center justify-center rounded-full bg-white/15">
           <MessageCircle className="size-5" />
+
           <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full border-2 border-orange-600 bg-emerald-400" />
         </span>
 
         <span className="font-semibold">Ask UniSphere AI</span>
+
         <Sparkles className="ml-1 size-4" />
       </Button>
 
-      {/* Responsive Chat Dialog */}
+      {/* Chat Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="fixed bottom-0 right-0 left-auto top-auto flex h-[min(720px,88dvh)] w-full max-w-[440px] translate-x-0 translate-y-0 flex-col gap-0 overflow-hidden rounded-t-2xl border-border bg-background p-0 shadow-2xl sm:bottom-5 sm:right-5 sm:h-[min(680px,85dvh)] sm:rounded-2xl">
+        <DialogContent
+          className="fixed bottom-0 right-0 left-auto top-auto flex h-[min(720px,88dvh)] w-full max-w-[440px] translate-x-0 translate-y-0 flex-col gap-0 overflow-hidden rounded-t-2xl border-border bg-background p-0 shadow-2xl sm:bottom-5 sm:right-5 sm:h-[min(680px,85dvh)] sm:rounded-2xl"
+        >
           {/* Header */}
           <DialogHeader className="shrink-0 border-b bg-orange-600 p-4 text-left text-white">
             <div className="flex items-center gap-3 pr-7">
@@ -173,18 +213,18 @@ export default function PublicAIWidget() {
                 </DialogTitle>
 
                 <DialogDescription className="mt-1 text-xs leading-relaxed text-white/80">
-                  Your guide to admissions and university life
+                  Your university guide · বাংলা ও English
                 </DialogDescription>
               </div>
 
               <span
                 className="size-2.5 shrink-0 rounded-full bg-emerald-300"
-                aria-label="Assistant available"
+                aria-label="Assistant"
               />
             </div>
           </DialogHeader>
 
-          {/* Chat Messages */}
+          {/* Messages */}
           <div
             className="flex-1 space-y-4 overflow-y-auto p-4"
             aria-live="polite"
@@ -202,8 +242,8 @@ export default function PublicAIWidget() {
                   </h3>
 
                   <p className="mt-2 max-w-xs text-sm leading-6 text-muted-foreground">
-                    Ask me about university programs, admissions,
-                    requirements, fees, and other university information.
+                    বিশ্ববিদ্যালয় সম্পর্কে যেকোনো প্রশ্ন করো।
+                    You can ask in Bengali or English.
                   </p>
                 </div>
 
@@ -256,7 +296,7 @@ export default function PublicAIWidget() {
                     )}
 
                     <div
-                      className={`max-w-[82%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-3 text-sm leading-6 ${
+                      className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-3 text-sm leading-6 ${
                         message.role === "user"
                           ? "rounded-tr-sm bg-orange-600 text-white"
                           : "rounded-tl-sm bg-muted text-foreground"
@@ -287,44 +327,48 @@ export default function PublicAIWidget() {
                 role="alert"
                 className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"
               >
-                {error}
-                <button
-                  type="button"
-                  onClick={() => setError("")}
-                  className="ml-2 font-semibold underline underline-offset-2"
-                >
-                  Dismiss
-                </button>
+                <p>{error}</p>
+
+                <div className="mt-2 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={retryLastMessage}
+                    disabled={isPending || messages.length === 0}
+                    className="inline-flex items-center gap-1 font-semibold underline underline-offset-2 disabled:opacity-50"
+                  >
+                    <RotateCcw className="size-3" />
+                    Try again
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setError("")}
+                    className="font-semibold underline underline-offset-2"
+                  >
+                    Dismiss
+                  </button>
+                </div>
               </div>
             )}
+
+            <div ref={messagesEndRef} />
           </div>
 
-          {/* Message Input */}
+          {/* Input */}
           <div className="shrink-0 border-t bg-background p-3">
             <form
               onSubmit={handleSubmit}
               className="flex items-end gap-2 rounded-xl border border-border bg-muted/30 p-2 focus-within:border-orange-500/50"
             >
               <Textarea
+                ref={textareaRef}
                 value={input}
                 onChange={(event) => {
                   setInput(event.target.value);
-
-                  if (error) {
-                    setError("");
-                  }
+                  if (error) setError("");
                 }}
-                onKeyDown={(event) => {
-                  if (
-                    event.key === "Enter" &&
-                    !event.shiftKey &&
-                    !event.nativeEvent.isComposing
-                  ) {
-                    event.preventDefault();
-                    event.currentTarget.form?.requestSubmit();
-                  }
-                }}
-                placeholder="Ask anything about UniSphere..."
+                onKeyDown={handleKeyDown}
+                placeholder="Ask anything... / যেকোনো প্রশ্ন করো..."
                 className="max-h-28 min-h-10 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0"
                 maxLength={1000}
                 disabled={isPending}
