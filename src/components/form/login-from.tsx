@@ -20,6 +20,7 @@ import { Eye, EyeOff, ShieldCheck, UserCheck, Wrench } from "lucide-react";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
 import { inputClass } from "../../utils/input-class";
+import GoogleLoginButton from '../googlebutton/GoogleLoginButton';
 
 export function LoginForm() {
   const { mutate: login, isPending, isError } = useLogin();
@@ -245,7 +246,7 @@ export function LoginForm() {
           </div>
 
           <FieldSeparator>Or continue with</FieldSeparator>
-
+            <GoogleLoginButton/>
           <div className="text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
             <Link

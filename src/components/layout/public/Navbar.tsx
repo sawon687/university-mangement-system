@@ -32,6 +32,7 @@ const Navbar = () => {
     { label: "About", url: "/about" },
      { label: "Service", url: "/service" },
      { label: "Contact", url: "/contact" },
+       { label: "Blog", url: "/blog" },
   ];
 
   return (
@@ -53,11 +54,11 @@ const Navbar = () => {
                 key={item.url}
                 href={item.url}
                 className={cn(
-                  "group relative flex items-center gap-2 text-sm font-medium",
+                  "group relative flex items-center gap-2   text-sm font-medium",
                   "transition-colors duration-300 ease-out",
                   isActive
-                    ? "bg-background text-primary "
-                    : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
+                    ? " text-orange-500 "
+                    : "text-foreground ",
                 )}
               >
                 {/* Active Indicator */}
